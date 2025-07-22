@@ -50,9 +50,25 @@ export default defineConfig({
             '^/weatherforecast': {
                 target,
                 secure: false
+            },
+            '/.well-known/openid-configuration': {
+                target,
+                secure: false
+            },
+            '/connect': {
+                target,
+                secure: false
+            },
+            '/api': {
+                target,
+                secure: false
+            },
+            '/swagger': {
+                target,
+                secure: false
             }
         },
-        port: parseInt(env.DEV_SERVER_PORT || '62305'),
+        port: parseInt(env.DEV_SERVER_PORT || '8000'),
         https: {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),
