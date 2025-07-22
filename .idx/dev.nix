@@ -15,7 +15,7 @@
       enable = true;
       previews = {
         web = {
-          command = [ "dotnet" "watch" "--urls=http://localhost:$PORT" ];
+          command = [ "dotnet" "run" "--urls=http://localhost:$PORT" ];
           manager = "web";
         };
       };
