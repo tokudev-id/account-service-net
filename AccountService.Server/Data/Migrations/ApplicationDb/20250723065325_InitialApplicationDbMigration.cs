@@ -42,18 +42,13 @@ namespace AccountService.Server.Data.Migrations.ApplicationDb
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "varchar(101)", maxLength: 101, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NickName = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false, collation: "utf8mb4_general_ci")
+                    LoginProvider = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Tag = table.Column<string>(type: "longtext", nullable: false)
+                    LinkedUserId = table.Column<string>(type: "varchar(50)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    TagUpdateDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LinkedUserId = table.Column<string>(type: "varchar(50)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsOolean = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    LastLogin = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Nonce = table.Column<string>(type: "longtext", nullable: false)
+                    IsOolean = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    LastLogin = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Nonce = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PasswordLastUpdate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     UserName = table.Column<string>(type: "varchar(100)", maxLength: 256, nullable: false, collation: "utf8mb4_general_ci")
@@ -90,8 +85,7 @@ namespace AccountService.Server.Data.Migrations.ApplicationDb
                         name: "FK_Users_Users_LinkedUserId",
                         column: x => x.LinkedUserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

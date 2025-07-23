@@ -1,7 +1,9 @@
-﻿using static Duende.IdentityServer.Models.IdentityResources;
+﻿#nullable enable
+using static Duende.IdentityServer.Models.IdentityResources;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+
 
 namespace AccountService.Server.Models
 {
@@ -12,15 +14,12 @@ namespace AccountService.Server.Models
 
         [Column(TypeName = "varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")]
         [MaxLength(32)]
-        public string NickName { get; set; }
-        public string Tag { get; set; }
-        public DateTime TagUpdateDate { get; set; }
-        public string LoginProvider { get; set; }
-        public ApplicationUser LinkedUser { get; set; }
+        public string? LoginProvider { get; set; }
+        public ApplicationUser? LinkedUser { get; set; }
 
-        public bool IsOolean { get; set; }
-        public DateTime LastLogin { get; set; }
-        public string Nonce { get; set; }
+        public bool? IsOolean { get; set; }
+        public DateTime? LastLogin { get; set; }
+        public string? Nonce { get; set; }
         public DateTime? PasswordLastUpdate { get; set; }
 
         [Column(TypeName = "varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")]

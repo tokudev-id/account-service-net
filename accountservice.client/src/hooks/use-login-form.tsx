@@ -36,7 +36,7 @@ export function useLoginForm() {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
 
-  const returnTo = searchParams.get('returnTo') ?? '';
+  const returnUrl = searchParams.get('returnUrl') ?? '';
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -100,10 +100,10 @@ export function useLoginForm() {
       setStatusAlert(alertToShow);
 
       // Clean URL (remove query params)
-      const newSearch = returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : '';
+      const newSearch = returnUrl ? `?returnUrl=${encodeURIComponent(returnUrl)}` : '';
       navigate(`/login${newSearch}`, { replace: true });
     }
-  }, [navigate, returnTo, searchParams]);
+  }, [navigate, returnUrl, searchParams]);
 
   useEffect(() => {
     handleInitialStatusMessages();
@@ -131,17 +131,17 @@ export function useLoginForm() {
         });
 
         setTimeout(() => {
-          if (returnTo) {
+          if (returnUrl) {
             try {
-              const returnToUrl = new URL(returnTo, window.location.origin);
-              if (returnToUrl.origin === window.location.origin) {
-                navigate(returnToUrl.pathname + returnToUrl.search + returnToUrl.hash);
+              const returnUrlUrl = new URL(returnUrl, window.location.origin);
+              if (returnUrlUrl.origin === window.location.origin) {
+                navigate(returnUrlUrl.pathname + returnUrlUrl.search + returnUrlUrl.hash);
               } else {
-                console.warn(`External redirect prevented: ${returnTo}`);
+                console.warn(`External redirect prevented: ${returnUrl}`);
                 navigate('/');
               }
             } catch {
-              console.error("Invalid returnTo URL, redirecting to /");
+              console.error("Invalid returnUrl URL, redirecting to /");
               navigate('/');
             }
           } else {
@@ -244,7 +244,7 @@ export function useLoginForm() {
     );
   };
 
-  const registerHref = returnTo ? `/register?returnTo=${encodeURIComponent(returnTo)}` : '/register';
+  const registerHref = returnUrl ? `/register?returnUrl=${encodeURIComponent(returnUrl)}` : '/register';
 
   return {
     form,
@@ -254,7 +254,7 @@ export function useLoginForm() {
     setShowPassword,
     renderStatusAlertComponent,
     registerHref,
-    returnTo,
+    returnUrl,
     showResendLinkForEmail,
     handleResendConfirmation,
     isResendingConfirmation,

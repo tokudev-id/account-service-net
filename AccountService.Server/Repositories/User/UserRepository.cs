@@ -23,7 +23,5 @@ namespace AccountService.Server.Repositories.User
             var result = await _userManager.CreateAsync(user, password);
             return result.Succeeded;
         }
-
-        // Implement other methods from IUserRepository
     }
 }

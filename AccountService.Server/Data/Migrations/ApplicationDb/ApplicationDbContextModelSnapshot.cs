@@ -75,14 +75,13 @@ namespace AccountService.Server.Data.Migrations.ApplicationDb
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsOolean")
+                    b.Property<bool?>("IsOolean")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("LastLogin")
+                    b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LinkedUserId")
-                        .IsRequired()
                         .HasColumnType("varchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -92,7 +91,6 @@ namespace AccountService.Server.Data.Migrations.ApplicationDb
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LoginProvider")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
@@ -100,16 +98,7 @@ namespace AccountService.Server.Data.Migrations.ApplicationDb
                         .HasMaxLength(101)
                         .HasColumnType("varchar(101)");
 
-                    b.Property<string>("NickName")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
-                        .UseCollation("utf8mb4_general_ci");
-
-                    MySqlPropertyBuilderExtensions.HasCharSet(b.Property<string>("NickName"), "utf8mb4");
-
                     b.Property<string>("Nonce")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("NormalizedEmail")
@@ -138,13 +127,6 @@ namespace AccountService.Server.Data.Migrations.ApplicationDb
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("TagUpdateDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
@@ -301,9 +283,7 @@ namespace AccountService.Server.Data.Migrations.ApplicationDb
                 {
                     b.HasOne("AccountService.Server.Models.ApplicationUser", "LinkedUser")
                         .WithMany()
-                        .HasForeignKey("LinkedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LinkedUserId");
 
                     b.Navigation("LinkedUser");
                 });

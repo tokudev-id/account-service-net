@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -53,8 +52,8 @@ const LoginFormComponent: FC = () => {
     showPassword,
     setShowPassword,
     renderStatusAlertComponent,
-    registerHref,
-    returnTo,
+    //registerHref,
+    returnUrl,
     showResendLinkForEmail,
     handleResendConfirmation,
     isResendingConfirmation,
@@ -159,7 +158,7 @@ const LoginFormComponent: FC = () => {
                     </span>
                   </div>
                 </div>
-                <GoogleSignInButton oidcOriginalRequest={returnTo} />
+                <GoogleSignInButton oidcOriginalRequest={returnUrl} />
               </>
             )}
           </form>
@@ -201,14 +200,14 @@ const LoginFormComponent: FC = () => {
         )}
       </CardContent>
 
-      <CardFooter className="flex flex-col items-center space-y-2">
-        <p className="text-sm text-muted-foreground">
-          Don't have an account?{' '}
-          <Link to={registerHref} className="text-primary hover:underline">
-            Register here
-          </Link>
-        </p>
-      </CardFooter>
+      {/*<CardFooter className="flex flex-col items-center space-y-2">*/}
+      {/*  <p className="text-sm text-muted-foreground">*/}
+      {/*    Don't have an account?{' '}*/}
+      {/*    <Link to={registerHref} className="text-primary hover:underline">*/}
+      {/*      Register here*/}
+      {/*    </Link>*/}
+      {/*  </p>*/}
+      {/*</CardFooter>*/}
     </Card>
   );
 };

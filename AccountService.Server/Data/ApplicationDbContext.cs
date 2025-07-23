@@ -22,7 +22,6 @@ namespace AccountService.Server.Data
                 entity.HasIndex(it => it.Id);
                 entity.Property(e => e.Id).HasMaxLength(50);
                 entity.Property(e => e.UserName).HasCharSet("utf8mb4").UseCollation("utf8mb4_general_ci");
-                entity.Property(e => e.NickName).HasCharSet("utf8mb4").UseCollation("utf8mb4_general_ci");
                 entity.Property(e => e.NormalizedUserName).HasCharSet("utf8mb4").UseCollation("utf8mb4_general_ci");
             });
 

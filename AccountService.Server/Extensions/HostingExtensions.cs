@@ -1,11 +1,18 @@
 ﻿using AccountService.Server.Data;
 using AccountService.Server.Identity;
 using AccountService.Server.Models;
+using AccountService.Server.Repositories.User;
+using AccountService.Server.Services.Authentication;
+using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.EntityFramework.DbContexts;
+using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
+using System.Net;
 
 namespace AccountService.Server.Extensions
 {
@@ -16,6 +23,9 @@ namespace AccountService.Server.Extensions
             var services = builder.Services;
             var configuration = builder.Configuration;
             var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
+
+            var redisServerSection = configuration.GetSection("RedisServer");
+            var redisConfig = redisServerSection.GetSection("RedisCacheConfiguration").Get<string>();
 
             // DB and Identity Configuration
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -59,6 +69,7 @@ namespace AccountService.Server.Extensions
             .AddAspNetIdentity<ApplicationUser>()
             .AddProfileService<AccountProfileService>();
 
+            SetupSession(services, redisConfig);
             // Register all your other services
             services.RegisterApplicationServices(configuration);
 
@@ -88,6 +99,15 @@ namespace AccountService.Server.Extensions
 
             // Use a descriptive policy name
             app.UseCors("DefaultCorsPolicy");
+            app.UseSession();
+            //app.Use(async (ctx, next) =>
+            //{
+            //    var duendeOptions = configuration.GetSection("IdentityServer").Get<IdentityServerOptions>();
+            //    ctx.RequestServices.GetRequiredService<IServerUrls>().Origin = duendeOptions.IssuerUri;
+            //    await next();
+            //});
+
+            app.UseAuthentication();
 
             app.UseIdentityServer(); // UseAuthentication is called inside UseIdentityServer
             app.UseAuthorization();
@@ -131,8 +151,10 @@ namespace AccountService.Server.Extensions
             //services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
             // Add other singletons...
 
+            // scoped Repository
+            services.AddScoped<IUserRepository, UserRepository>();
             // Scoped Services
-            //services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<Services.Account.IAccountService, Services.Account.AccountService>();
             //services.AddScoped<IEmailUtil, EmailUtil>();
             // Add other scoped services...
 
@@ -198,5 +220,38 @@ namespace AccountService.Server.Extensions
                 throw;
             }
         }
+        private static void SetupSession(IServiceCollection services, string redisConfig)
+        {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.Secure = CookieSecurePolicy.Always;
+                options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LogoutPath = "/spa/logout";
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+                    return Task.CompletedTask;
+                };
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                options.SessionStore = new RedisCacheTicketStore(new RedisCacheOptions()
+                {
+                    Configuration = redisConfig
+                });
+            });
+
+            services.AddSession(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+        }
+
     }
 }

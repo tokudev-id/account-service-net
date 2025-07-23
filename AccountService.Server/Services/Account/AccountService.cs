@@ -27,7 +27,7 @@ namespace AccountService.Server.Services.Account
             }
 
             // This will attempt to sign in the user and create a cookie
-            var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent: true, lockoutOnFailure: false);
 
             return result;
         }
