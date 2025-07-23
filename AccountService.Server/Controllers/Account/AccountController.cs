@@ -31,6 +31,19 @@ namespace AccountService.Server.Controllers
             _clientStore = clientStore;
         }
 
+        [HttpGet("check-session")]
+        public IActionResult GetAuthStatus()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok(new { isAuthenticated = true, userName = User.Identity.Name }); // Adapt userName if needed
+            }
+            else
+            {
+                return Ok(new { isAuthenticated = false });
+            }
+        }
+
         [HttpGet("context")]
         public async Task<IActionResult> Context(string returnUrl)
         {
