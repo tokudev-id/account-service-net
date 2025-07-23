@@ -1,58 +1,53 @@
-import { useEffect, useState } from 'react';
 import './App.css';
-
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import RootLayout from './components/layout/RootLayout';
+import ProtectedRoute from './components/hoc/ProtectedRoute';
+import Login from './pages/Login';
 
 function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
+  const isAuthenticated = false; // Replace with actual authentication state
+    const isLoading = false; // Replace with actual loading state
 
-    useEffect(() => {
-        populateWeatherData();
-    }, []);
-
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
+    if (isLoading) {
+        // Optionally, show a loading indicator while checking authentication status
+        return <div>Loading authentication...</div>;
+    }
 
     return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
-    );
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<RootLayout />}>
+                    {/* Public Routes */}
+                    <Route path="login" element={<Login />} />
+                    {/* <Route path="about" element={<About />} /> Add back other public routes if needed */}
 
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        if (response.ok) {
-            const data = await response.json();
-            setForecasts(data);
-        }
-    }
+
+                    {/* Root path behavior based on authentication */}
+                    <Route
+                        index
+                        element={
+                            isAuthenticated ? (
+                                <ProtectedRoute element={<>PRofile</>} /> // If authorized, show Profile
+                            ) : (
+                                <Navigate to="/login" replace /> // If not authorized, redirect to Login
+                            )
+                        }
+                    />
+
+                    {/* Other Protected Routes */}
+                    {/* Example: A dashboard page that is always protected */}
+                    <Route
+                        path="dashboard"
+                        element={<ProtectedRoute element={<>Dashboard</>} />} // Use ProtectedRoute for this path
+                    />
+
+
+                    {/* Catch-all route for 404 */}
+                    <Route path="*" element={<>Not Found</>} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App;

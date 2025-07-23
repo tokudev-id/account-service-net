@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
@@ -42,8 +43,16 @@ export default defineConfig({
     plugins: [plugin()],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+            '@components': path.resolve(__dirname, './src/components'),
+            '@assets': path.resolve(__dirname, './src/assets'),
+            '@hooks': path.resolve(__dirname, './src/hooks'),
+            '@lib': path.resolve(__dirname, './src/lib')
         }
+    },
+    css: {
+        devSourcemap: true,
+        postcss: './postcss.config.cjs'
     },
     server: {
         proxy: {
