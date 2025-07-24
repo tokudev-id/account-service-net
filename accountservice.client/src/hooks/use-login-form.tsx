@@ -36,7 +36,7 @@ export function useLoginForm() {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
 
-  const returnUrl = searchParams.get('returnUrl') ?? '';
+  const returnUrl = searchParams.get('ReturnUrl') ?? '';
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),

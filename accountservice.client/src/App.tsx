@@ -7,6 +7,8 @@ import { AuthRoute } from './components/hoc/AuthRoute/AuthRoute';
 import RootLayout from './components/layout/RootLayout';
 import ProfilePage from './pages/Profile';
 import Logout from './pages/Logout';
+import Error from './pages/Error';
+import OIDCLoading from './pages/OIDCLoading';
 
 function App() {
     return (
@@ -16,9 +18,11 @@ function App() {
                     <Route path="/" element={<RootLayout />}>
                         {/* Public routes inside layout */}
                         <Route element={<AuthRoute />}>
+                            <Route path="error" element={<Error />} />
                             <Route path="login" element={<Login />} />
                         </Route>
                         <Route path="logout" element={<Logout />} />
+                        <Route path="connect/authorize/callback" element={<OIDCLoading />} />
 
                         {/* Protected routes inside layout */}
                         <Route element={<ProtectedRoute />}>

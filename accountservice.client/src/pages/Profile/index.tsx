@@ -74,7 +74,6 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   const memoizedInitialData = useMemo(() => {
-    console.log(userInfo)
     if (!userInfo) return undefined;
     return {
       name: userInfo.name || '',

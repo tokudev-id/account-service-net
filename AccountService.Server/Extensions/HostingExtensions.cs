@@ -89,7 +89,7 @@ namespace AccountService.Server.Extensions
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
 
@@ -231,6 +231,7 @@ namespace AccountService.Server.Extensions
             services.ConfigureApplicationCookie(options =>
             {
                 options.LogoutPath = "/api/auth/logout";
+                options.LoginPath = "/login";
                 options.Events.OnRedirectToLogin = context =>
                 {
                     context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
