@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// src/hooks/use-profile.ts
-'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -10,7 +7,7 @@ export interface ProfileUserInfo {
   nickname?: string;
   gender?: string;
   country?: string;
-  birthdate?: string; 
+  birthdate?: string;
   timezone?: string;
   picture?: string;
   has_password?: boolean;
@@ -19,6 +16,7 @@ export interface ProfileUserInfo {
   sub: string;
   email?: string | null;
   roles?: string[];
+  isEmailVerified?: boolean;
   [key: string]: any;
 }
 
@@ -35,18 +33,17 @@ export function useProfile() {
     setError(null);
 
     try {
-
       const response = await fetch('/api/profile', {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
       });
 
       if (response.status === 401) {
         toast({
-          title: "Session Expired",
-          description: "Please log in again.",
-          variant: "destructive"
+          title: 'Session Expired',
+          description: 'Please log in again.',
+          variant: 'destructive',
         });
         navigate('/login');
         return;
@@ -57,37 +54,43 @@ export function useProfile() {
         try {
           errorData = await response.json();
         } catch (parseError) {
-          console.error("Failed to parse error response from userinfo endpoint:", parseError);
+          console.error('Failed to parse error response:', parseError);
         }
         throw new Error(errorData.error_description);
       }
 
       const data: ProfileUserInfo = await response.json();
-      
+
       setUserInfo({
         ...data.data,
-        nickname: data.data.nickname || data.data.name || 'User', 
+        nickname: data.data.nickname || data.data.name || 'User',
         gender: data.data.gender || '',
         name: data.data.name || '',
         country: data.data.country || '',
-        birthdate: data.data.birthdate || '', 
+        birthdate: data.data.birthDate || '',
         timezone: data.data.timezone || '',
-        picture: data.data.picture, // Keep as is, placeholder logic will be in the component
-        has_password: data.data.has_password,
-        latest_password_changed_at: data.data.latest_password_changed_at,
+        isEmailVerified: data.data.isEmailVerified,
+        picture: data.data.picture,
+        has_password: data.data.hasPassword,
+        latest_password_changed_at: data.data.passwordLastUpdate,
       });
     } catch (err) {
       console.error('Failed to fetch user info:', err);
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unknown error occurred';
       setError(errorMessage);
 
-      if (errorMessage.toLowerCase().includes('token') || errorMessage.toLowerCase().includes('login') || errorMessage.toLowerCase().includes('session expired')) {
+      if (
+        errorMessage.toLowerCase().includes('token') ||
+        errorMessage.toLowerCase().includes('login') ||
+        errorMessage.toLowerCase().includes('session expired')
+      ) {
         navigate('/login');
       } else {
         toast({
-          title: "Error",
+          title: 'Error',
           description: `Could not load user data: ${errorMessage}`,
-          variant: "destructive"
+          variant: 'destructive',
         });
       }
     } finally {
@@ -99,29 +102,39 @@ export function useProfile() {
     fetchUserInfo();
   }, [fetchUserInfo]);
 
-  const handleLogout = async () => {
-    setIsLoading(true); 
+  const handleLogout = useCallback(async () => {
+    setIsLoading(true);
     try {
-      
-      toast({
-        title: "Logged Out",
-        description: "You have been successfully logged out."
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
       });
-      navigate('/login');
+
+      if (!res.ok) {
+        throw new Error('Failed to logout properly');
+      }
+
+      toast({
+        title: 'Logged Out',
+        description: 'You have been successfully logged out.',
+      });
+
+      window.location.reload()
     } catch (error) {
       console.error('Logout error:', error);
       toast({
-        title: "Logout Failed",
-        description: "Could not log out. Please try again.",
-        variant: "destructive"
+        title: 'Logout Failed',
+        description: 'Could not log out. Please try again.',
+        variant: 'destructive',
       });
+    } finally {
       setIsLoading(false);
     }
-  };
+  }, [navigate, toast]);
 
   const handleEditSuccess = () => {
     setIsEditing(false);
-    fetchUserInfo(); 
+    fetchUserInfo();
   };
 
   return {
@@ -132,6 +145,6 @@ export function useProfile() {
     setIsEditing,
     handleLogout,
     handleEditSuccess,
-    fetchUserInfo, 
+    fetchUserInfo,
   };
 }

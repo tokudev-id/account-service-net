@@ -170,11 +170,11 @@ const ProfilePage: React.FC = () => {
                   <p className="text-sm text-muted-foreground">{userInfo.email}</p>
                 </div>
               </div>
-              {!isFormActive && (
+              {/* {!isFormActive && (
                 <Button onClick={() => setIsEditing(true)} size="sm" disabled={isFormActive}>
                   <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
                 </Button>
-              )}
+              )} */}
             </div>
           )}
         </div>
@@ -218,7 +218,7 @@ const ProfilePage: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{userInfo.email}</p>
-                        <p className="text-xs text-muted-foreground">{userInfo.emailConfirmed ? "Verified" : "Not Verified"}</p>
+                        <p className="text-xs text-muted-foreground">{userInfo.isEmailVerified ? "Verified" : "Not Verified"}</p>
                       </div>
                     </div>
                     {!userInfo.has_password && (
@@ -229,7 +229,7 @@ const ProfilePage: React.FC = () => {
                         <p className="text-xs text-muted-foreground mt-1">Allows you to log in with a password in addition to any third-party providers.</p>
                       </div>
                     )}
-                    {userInfo.has_password && (
+                    {/* {userInfo.has_password && (
                       <div>
                         <Button variant="outline" onClick={() => setShowChangePasswordForm(true)} disabled={isFormActive}>
                           <ShieldAlert className="mr-2 h-4 w-4" /> Change Password
@@ -238,7 +238,7 @@ const ProfilePage: React.FC = () => {
                           <p className="text-xs text-muted-foreground mt-1">Password last changed: {formatDisplayDate(userInfo.latest_password_changed_at)}</p>
                         )}
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

@@ -71,6 +71,7 @@ namespace AccountService.Server.Controllers.Profile
                 Country = claims.FindFirstValue(ClaimsConstants.Country),
                 City = claims.FindFirstValue(ClaimsConstants.City),
                 ProfilePictureUrl = picture,
+                IsEmailVerified = user.EmailConfirmed,
                 CurrentLogins = userLogins,
                 HasPassword = !string.IsNullOrEmpty(user.PasswordHash),
                 PasswordLastUpdate = user.PasswordLastUpdate

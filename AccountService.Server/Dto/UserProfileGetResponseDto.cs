@@ -14,6 +14,7 @@ namespace AccountService.Server.Dto
         public string City { get; set; }
         public string ProfilePictureUrl { get; set; }
         public bool HasPassword { get; set; }
+        public bool IsEmailVerified { get; set; }
         public DateTime? PasswordLastUpdate { get; set; }
 
         public IList<UserLoginInfo> CurrentLogins { get; set; }

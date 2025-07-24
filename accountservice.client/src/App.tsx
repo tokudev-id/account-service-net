@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import { AuthRoute } from './components/hoc/AuthRoute/AuthRoute';
 import RootLayout from './components/layout/RootLayout';
 import ProfilePage from './pages/Profile';
+import Logout from './pages/Logout';
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                         <Route element={<AuthRoute />}>
                             <Route path="login" element={<Login />} />
                         </Route>
+                        <Route path="logout" element={<Logout />} />
 
                         {/* Protected routes inside layout */}
                         <Route element={<ProtectedRoute />}>

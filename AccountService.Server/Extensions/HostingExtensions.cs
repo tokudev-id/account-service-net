@@ -230,7 +230,7 @@ namespace AccountService.Server.Extensions
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LogoutPath = "/spa/logout";
+                options.LogoutPath = "/api/auth/logout";
                 options.Events.OnRedirectToLogin = context =>
                 {
                     context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;

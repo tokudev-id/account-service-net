@@ -7,6 +7,8 @@ using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using AccountService.Server.Dto;
 using Microsoft.VisualBasic;
+using Duende.IdentityServer.Events;
+using Duende.IdentityServer.Extensions;
 
 namespace AccountService.Server.Controllers
 {
@@ -18,17 +20,20 @@ namespace AccountService.Server.Controllers
         private readonly IAccountService _accountService;
         private readonly IIdentityServerInteractionService _interactionService;
         private readonly IClientStore _clientStore; // Needed for OIDC context
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IAccountService accountService,
             IIdentityServerInteractionService interactionService,
-            IClientStore clientStore)
+            IClientStore clientStore,
+            SignInManager<ApplicationUser> singinManager)
         {
             _interaction = interaction;
             _accountService = accountService;
             _interactionService = interactionService;
             _clientStore = clientStore;
+            _signInManager = singinManager;
         }
 
         [HttpGet("check-session")]
@@ -120,12 +125,51 @@ namespace AccountService.Server.Controllers
             return BadRequest(new { errors = errors });
         }
 
-        // Optional: Add a logout endpoint
-        // [HttpPost("logout")]
-        // public async Task<IActionResult> Logout()
-        // {
-        //     await _signInManager.SignOutAsync(); // You need SignInManager injected in the controller
-        //     return Ok(new { message = "Logout successful" });
-        // }
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout(string logoutId)
+        {
+            var logoutInfo = await _interaction.GetLogoutContextAsync(logoutId);
+
+            if (logoutInfo != null && !string.IsNullOrEmpty(logoutId))
+            {
+                if (string.IsNullOrEmpty(logoutInfo.ClientId))
+                {
+                    return BadRequest("Unable to get logout info.");
+                }
+
+                if (User.Identity.IsAuthenticated)
+                {
+                    await _signInManager.SignOutAsync();
+
+                    return Ok(new
+                    {
+                        iframeUrl = logoutInfo.SignOutIFrameUrl,
+                        postLogoutRedirectUri = logoutInfo.PostLogoutRedirectUri
+                    });
+                }
+
+            }
+            await _signInManager.SignOutAsync();
+            return Ok();
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> PostLogout(string? logoutId="")
+        {
+            var logoutInfo = await _interaction.GetLogoutContextAsync(logoutId);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                await _signInManager.SignOutAsync();
+
+                return Ok(new
+                {
+                    iframeUrl = logoutInfo?.SignOutIFrameUrl,
+                    postLogoutRedirectUri = logoutInfo?.PostLogoutRedirectUri
+                });
+            }
+
+            return BadRequest();
+        }
     }
 }
