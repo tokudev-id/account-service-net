@@ -1,52 +1,36 @@
-import './App.css';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import RootLayout from './components/layout/RootLayout';
-import ProtectedRoute from './components/hoc/ProtectedRoute';
+// App.tsx
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/hoc/ProtectedRoute';
 import Login from './pages/Login';
-import { useAuth } from './contexts/AuthContext';
+import { AuthRoute } from './components/hoc/AuthRoute/AuthRoute';
+import RootLayout from './components/layout/RootLayout';
+import ProfilePage from './pages/Profile';
 
 function App() {
-  // Get authentication state from your hook
-  const { isAuthenticated, isLoading } = useAuth();
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<RootLayout />}>
+                        {/* Public routes inside layout */}
+                        <Route element={<AuthRoute />}>
+                            <Route path="login" element={<Login />} />
+                        </Route>
 
-  if (isLoading) {
-    // Optionally, show a loading indicator while checking authentication status
-    return <div>Loading authentication...</div>;
-  }
+                        {/* Protected routes inside layout */}
+                        <Route element={<ProtectedRoute />}>
+                            <Route index element={<ProfilePage />} />
+                            <Route path="profile" element={<ProfilePage />} />
+                        </Route>
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<RootLayout />}>
-          {/* Public Routes */}
-          <Route path="login" element={<Login />} />
-          {/* <Route path="about" element={<About />} /> Add back other public routes if needed */}
-
-          {/* Root path behavior based on authentication */}
-          <Route
-            index
-            element={
-              isAuthenticated ? (
-                <ProtectedRoute element={<>Profile</>} /> // If authorized, show Profile
-              ) : (
-                <Navigate to="/login" replace /> // If not authorized, redirect to Login
-              )
-            }
-          />
-
-          {/* Other Protected Routes */}
-          {/* Example: A dashboard page that is always protected */}
-          <Route
-            path="dashboard"
-            element={<ProtectedRoute element={<>Dashboard</>} />} // Use ProtectedRoute for this path
-          />
-
-          {/* Catch-all route for 404 */}
-          <Route path="*" element={<>Not Found</>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+                        {/* 404 fallback */}
+                        <Route path="*" element={<div>Not Found</div>} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    );
 }
 
 export default App;

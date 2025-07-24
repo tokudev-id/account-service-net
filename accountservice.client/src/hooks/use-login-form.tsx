@@ -138,14 +138,14 @@ export function useLoginForm() {
                 navigate(returnUrlUrl.pathname + returnUrlUrl.search + returnUrlUrl.hash);
               } else {
                 console.warn(`External redirect prevented: ${returnUrl}`);
-                navigate('/');
+                window.location.reload();
               }
             } catch {
               console.error("Invalid returnUrl URL, redirecting to /");
-              navigate('/');
+              window.location.reload();
             }
           } else {
-            navigate('/');
+            window.location.reload();
           }
         }, 500);
 

@@ -27,13 +27,19 @@ export default function RootLayout() {
 
       {/* <PageProgressBar /> */}
 
-      <main className="min-h-[calc(100vh-theme(spacing.14))] flex flex-col">
+      {/* <main className="min-h-[calc(100vh-theme(spacing.14))] flex flex-col">
         <div className="flex flex-1 items-center justify-center bg-secondary p-4">
             <div className="w-full max-w-md">
                 <Outlet />
             </div>
         </div>
+      </main> */}
+      <main className="min-h-[calc(100vh-theme(spacing.14))] flex flex-col">
+        <div className="flex-1 bg-secondary">
+          <Outlet />
+        </div>
       </main>
+
 
       <Toaster />
     </Suspense>

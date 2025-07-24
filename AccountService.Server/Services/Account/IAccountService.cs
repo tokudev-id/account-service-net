@@ -1,4 +1,5 @@
 using AccountService.Server.Dto;
+using AccountService.Server.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace AccountService.Server.Services.Account
@@ -7,6 +8,7 @@ namespace AccountService.Server.Services.Account
     {
         Task<SignInResult> PasswordSignInAsync(string email, string password);
         Task<IdentityResult> RegisterUserAsync(RegisterDto model);
-        // Add other account-related methods as needed (e.g., SignOutAsync)
+        Task<ApplicationUser?> FindUserByIdAsync(string id);
+        Task<Dictionary<string, object>> GetUserClaimsAsync(string userId, List<string> claimTypes);
     }
 }

@@ -229,7 +229,9 @@ const Login: FC = () => {
 
   return (
     <Suspense fallback={fallbackContent}>
-      <LoginFormComponent />
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <LoginFormComponent />
+        </div>
     </Suspense>
   );
 };
