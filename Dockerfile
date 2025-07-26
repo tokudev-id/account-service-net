@@ -27,6 +27,9 @@ ENV RedisServer__RedisInstanceName="account:$BUILD_ENV:"
 ENV RedisServer__RedisCacheConfiguration="redis-internal,password=$REDIS_PASSWORD"
 ENV RedisServer__RedisInstanceName="redis-internal,allowAdmin=true,password=$REDIS_PASSWORD"
 
+RUN apt-get update -yq && \
+    apt-get install -yq curl gnupg ca-certificates
+
 # Add NodeSource GPG key
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
 # Add Node.js 20.x repository
