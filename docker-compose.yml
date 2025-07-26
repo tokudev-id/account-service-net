@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  blue:
+    image: ${IMAGE_NAME}:latest
+    environment:
+      - ConnectionStrings__DefaultConnection=${DEFAULT_CONNECTION}
+      - ConnectionStrings__DbPassword=${DB_PASSWORD}
+    container_name: ${CONTAINER_PROJECT_NAME}-blue # Now dynamic!
+    restart: unless-stopped
+    ports:
+      - "${BLUE_PORT}:8000"
+    networks:
+      - grrnet
+
+  green:
+    image: ${IMAGE_NAME}:latest
+    environment:
+      - ConnectionStrings__DefaultConnection=${DEFAULT_CONNECTION}
+      - ConnectionStrings__DbPassword=${DB_PASSWORD}
+    container_name: ${CONTAINER_PROJECT_NAME}-green # Now dynamic!
+    restart: unless-stopped
+    ports:
+      - "${GREEN_PORT}:8000"
+    networks:
+      - grrnet
+
+networks:
+  grrnet:
+    name: grrnet
+    external: true

@@ -1,0 +1,155 @@
+name: .NET CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - sandbox
+
+env:
+  PROJECT_BASE_NAME: ${{ github.event.repository.name }} # Base name for your project
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+          token: ${{ secrets.SUBMODULE_ACCESS_TOKEN }}
+          persist-credentials: true
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Nuget.Config file
+        run: echo "${{ secrets.NUGET_CONFIG }}" > NuGet.Config
+
+      - name: Build and push Docker image
+        run: |
+          BUILD_ENVIRONMENT="release"
+          if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
+            BUILD_ENVIRONMENT="sandbox"
+          fi
+          docker build \
+            -t ${{ env.IMAGE_NAME }}:latest \
+            --build-arg BUILD_ENV="$BUILD_ENVIRONMENT" \
+            --build-arg DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+            --build-arg DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            --build-arg REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
+            -f Dockerfile \
+            .
+          docker push ${{ env.IMAGE_NAME }}:latest
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull latest image from registry
+        run: docker pull ${{ env.IMAGE_NAME }}:latest
+
+      - name: Set deployment environment variables
+        id: env_setup
+        run: |
+          # Default values for release
+          echo "BLUE_PORT=30015" >> $GITHUB_OUTPUT
+          echo "GREEN_PORT=30016" >> $GITHUB_OUTPUT
+          echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-account-service.conf" >> $GITHUB_OUTPUT
+          echo "APP_API_HEALTH=" >> $GITHUB_OUTPUT
+          echo "UPSTREAM_NAME=app_mres_account_service" >> $GITHUB_OUTPUT
+          echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
+          echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
+
+          if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
+            echo "BLUE_PORT=30017" >> $GITHUB_OUTPUT
+            echo "GREEN_PORT=30018" >> $GITHUB_OUTPUT
+            echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-account-service-sandbox.conf" >> $GITHUB_OUTPUT
+            echo "APP_API_HEALTH=/sandbox/account/v1/health/liveness" >> $GITHUB_OUTPUT
+            echo "UPSTREAM_NAME=app_mres_account_sandbox_service" >> $GITHUB_OUTPUT
+            echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
+            echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Perform Deployment
+        run: |
+          set -e # Exit immediately if a command fails
+
+          # --- Configuration ---
+          BLUE_PORT=${{ steps.env_setup.outputs.BLUE_PORT }}
+          GREEN_PORT=${{ steps.env_setup.outputs.GREEN_PORT }}
+          NGINX_UPSTREAM_CONFIG=${{ steps.env_setup.outputs.NGINX_UPSTREAM_CONFIG }}
+          UPSTREAM_NAME=${{ steps.env_setup.outputs.UPSTREAM_NAME }}
+          APP_API_HEALTH=${{ steps.env_setup.outputs.APP_API_HEALTH }}
+          COMPOSE_PROJECT_NAME=${{ steps.env_setup.outputs.COMPOSE_PROJECT_NAME }}
+          CONTAINER_PROJECT_NAME=${{ steps.env_setup.outputs.CONTAINER_PROJECT_NAME }}
+
+          # 1. Determine which environment is live and which is standby
+          if ! sudo test -f "$NGINX_UPSTREAM_CONFIG"; then
+             echo "Upstream config not found. Initializing for first deployment to BLUE."
+             STANDBY_COLOR="blue"
+             STANDBY_PORT=$BLUE_PORT
+             # Create a dummy live color to prevent the shutdown step from running
+             LIVE_COLOR="none"
+          elif sudo grep -q ":$BLUE_PORT" "$NGINX_UPSTREAM_CONFIG"; then
+            LIVE_COLOR="blue"
+            STANDBY_COLOR="green"
+            STANDBY_PORT=$GREEN_PORT
+          else
+            LIVE_COLOR="green"
+            STANDBY_COLOR="blue"
+            STANDBY_PORT=$BLUE_PORT
+          fi
+
+          echo "Starting deployment to standby slot: $STANDBY_COLOR"
+
+          # Export secrets as shell environment variables
+          export DEFAULT_CONNECTION="${{ secrets.DEFAULT_CONNECTION }}"
+          export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
+          export BLUE_PORT=$BLUE_PORT
+          export GREEN_PORT=$GREEN_PORT
+          export CONTAINER_PROJECT_NAME=$CONTAINER_PROJECT_NAME
+
+          # 2. Start the standby container with the new image
+          docker compose -p $COMPOSE_PROJECT_NAME up -d --wait --wait-timeout 60 --no-deps --force-recreate \
+            $STANDBY_COLOR
+          
+          # 2.1 Sleep first
+          sleep 10s
+
+          # 3. Health check the new container before switching traffic
+          echo "Performing health check on $STANDBY_COLOR at http://localhost:$STANDBY_PORT"
+          curl --silent --include --retry-connrefused --retry 60 --retry-delay 2 --fail http://localhost:$STANDBY_PORT$APP_API_HEALTH || { echo "Health check failed!"; exit 1; }
+          echo "Health check passed."
+
+          # 4. Atomically switch Nginx to point to the new container
+          echo "Switching Nginx to point to $STANDBY_COLOR on port $STANDBY_PORT"
+          echo "upstream $UPSTREAM_NAME { server 127.0.0.1:$STANDBY_PORT; }" | sudo tee $NGINX_UPSTREAM_CONFIG
+
+          # 5. Test Nginx config and reload gracefully
+          sudo nginx -t
+          sudo nginx -s reload
+          echo "Traffic is now live on $STANDBY_COLOR."
+
+          # 6. Stop the old container
+          if [ "$LIVE_COLOR" != "none" ]; then
+            echo "Shutting down old container: $LIVE_COLOR"
+            # Stop specific container within the project
+            docker compose -p $COMPOSE_PROJECT_NAME stop $LIVE_COLOR
+          fi
+
+          echo "Deployment successful!"
