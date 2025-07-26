@@ -41,7 +41,7 @@ const Error = () => {
     <>
       {loading ? (
         <div className="flex items-center justify-center h-screen">
-          <div className="text-lg font-medium text-gray-600">Loading...</div>
+          <div className="text-lg font-medium text-gray-600"></div>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center bg-gray-50">

@@ -24,8 +24,7 @@ interface StatusAlertProps {
 export function useLoginForm() {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const location = useLocation();  
 
   const [showPassword, setShowPassword] = useState(false);
   const [statusAlert, setStatusAlert] = useState<StatusAlertProps | null>(null);
@@ -36,6 +35,7 @@ export function useLoginForm() {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
 
+  const searchParams = new URLSearchParams(location.search);
   const returnUrl = searchParams.get('ReturnUrl') ?? '';
 
   const form = useForm<LoginFormValues>({

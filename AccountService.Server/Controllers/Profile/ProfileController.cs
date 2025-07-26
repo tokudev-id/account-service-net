@@ -18,15 +18,18 @@ namespace AccountService.Server.Controllers.Profile
         private readonly IAccountService _userService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAccountService _accountService;
 
         public ProfileController(
             IAccountService userService,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IAccountService accountService)
         {
             _userService = userService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -89,6 +92,23 @@ namespace AccountService.Server.Controllers.Profile
                 error = "unsupported_grant_type",
                 error_description = "Only GET with cookie session is supported"
             });
+        }
+
+        [HttpPost("set-pin")]
+        public async Task<IActionResult> SetPin([FromBody] SetPinRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Pin) || string.IsNullOrWhiteSpace(request.UserId))
+            {
+                return BadRequest("UserId and PIN must be provided.");
+            }
+
+            var success = await _accountService.SetUserPinAsync(request.UserId, request.Pin);
+            if (!success)
+            {
+                return NotFound("User not found or failed to update PIN.");
+            }
+
+            return Ok(new { message = "PIN updated successfully." });
         }
     }
 }

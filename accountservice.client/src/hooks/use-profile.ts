@@ -27,6 +27,19 @@ export function useProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const searchParams = new URLSearchParams(location.search);
+  const returnUrl = searchParams.get('ReturnUrl') ?? '';
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (returnUrl) {
+        const returnUrlUrl = new URL(returnUrl, window.location.origin);
+        if (returnUrlUrl.origin === window.location.origin) {
+          navigate(returnUrlUrl.pathname + returnUrlUrl.search + returnUrlUrl.hash);
+        }
+      }
+    }, 500);
+  }, []);
 
   const fetchUserInfo = useCallback(async () => {
     setIsLoading(true);

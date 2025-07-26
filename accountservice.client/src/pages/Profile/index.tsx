@@ -180,8 +180,8 @@ const ProfilePage: React.FC = () => {
       </div>
 
       <div className="container mx-auto p-4 md:p-8">
-        <Card className="w-full -mt-12 sm:-mt-16 relative z-10 shadow-lg">
-          <CardContent className="pt-10">
+        <Card className="w-full -mt-12 sm:-mt-14 relative z-10 shadow-lg">
+                  <CardContent className="pt-10">
             {error && <p className="text-destructive text-sm mb-4">Error loading profile: {error}</p>}
 
             {isEditing && userInfo && memoizedInitialData ? (

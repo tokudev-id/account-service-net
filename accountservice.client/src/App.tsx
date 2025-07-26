@@ -21,7 +21,7 @@ function App() {
                             <Route path="error" element={<Error />} />
                             <Route path="login" element={<Login />} />
                         </Route>
-                        <Route path="logout" element={<Logout />} />
+                        <Route path="api/auth/logout" element={<Logout />} />
                         <Route path="connect/authorize/callback" element={<OIDCLoading />} />
 
                         {/* Protected routes inside layout */}
