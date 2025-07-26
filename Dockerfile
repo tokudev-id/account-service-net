@@ -27,7 +27,16 @@ ENV RedisServer__RedisInstanceName="account:$BUILD_ENV:"
 ENV RedisServer__RedisCacheConfiguration="redis-internal,password=$REDIS_PASSWORD"
 ENV RedisServer__RedisInstanceName="redis-internal,allowAdmin=true,password=$REDIS_PASSWORD"
 
-RUN dotnet publish --configfile "./NuGet.Config" -c "${BUILD_ENV}" -o /out
+# Add NodeSource GPG key
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+# Add Node.js 20.x repository
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+
+# Update package lists and install Node.js
+RUN apt-get update -yq && \
+    apt-get install -yq nodejs
+
+RUN dotnet publish "./AccountService.Server/AccountService.Server.csproj" --configfile "./NuGet.Config" -c "${BUILD_ENV}" -o /out
 
 
 
