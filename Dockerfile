@@ -2,15 +2,15 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 
-COPY ./src/AccountService.Server/*.csproj ./AccountService.Server/
-COPY ./src/accountservice.client/ ./accountservice.client/
+COPY ./AccountService.Server/*.csproj ./AccountService.Server/
+COPY ./accountservice.client/ ./accountservice.client/
 
 COPY NuGet.Config ./
 
 RUN dotnet restore "./AccountService.Server/AccountService.Server.csproj" --configfile "./NuGet.Config"
 
-COPY ./src/AccountService.Server/. ./AccountService.Server/
-COPY ./src/accountservice.client/. ./accountservice.client/
+COPY ./AccountService.Server/. ./AccountService.Server/
+COPY ./accountservice.client/. ./accountservice.client/
 
 ARG DB_USERNAME
 ARG DB_PASSWORD
