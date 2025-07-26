@@ -2,15 +2,15 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 
-COPY ./src/AccountService.Server/*.csproj ./AccountService.Server/
-COPY ./src/accountservice.client/ ./accountservice.client/
+COPY ./AccountService.Server/*.csproj ./AccountService.Server/
+COPY ./accountservice.client/ ./accountservice.client/
 
 COPY NuGet.Config ./
 
 RUN dotnet restore "./AccountService.Server/AccountService.Server.csproj" --configfile "./NuGet.Config"
 
-COPY ./src/AccountService.Server/. ./AccountService.Server/
-COPY ./src/accountservice.client/. ./accountservice.client/
+COPY ./AccountService.Server/. ./AccountService.Server/
+COPY ./accountservice.client/. ./accountservice.client/
 
 ARG DB_USERNAME
 ARG DB_PASSWORD
@@ -19,13 +19,25 @@ ARG BUILD_ENV
 
 # Set environment variables for the .NET application at build time
 # These will be available to the application when it runs
-ENV ConnectionStrings__ApplicationDBConnectionString="Server=mysql-server;Port=3306;Database=account-service-$BUILD_ENV;Uid=$DB_USERNAME;pwd=$DB_PASSWORD;Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;"
-ENV ConnectionStrings__ISGrantDBConnectionString="Server=mysql-server;Port=3306;Database=account-service-$BUILD_ENV-grant-v6;Uid=$DB_USERNAME;pwd=$DB_PASSWORD;Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;"
-ENV ConnectionStrings__ISConfigDBConnectionString="Server=mysql-server;Port=3306;Database=account-service-$BUILD_ENV-config-v6;Uid=$DB_USERNAME;pwd=$DB_PASSWORD;Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;"
-ENV ConnectionStrings__Redis="redis-internal"
-ENV RedisServer__RedisInstanceName="account:$BUILD_ENV:"
-ENV RedisServer__RedisCacheConfiguration="redis-internal,password=$REDIS_PASSWORD"
-ENV RedisServer__RedisInstanceName="redis-internal,allowAdmin=true,password=$REDIS_PASSWORD"
+ENV ConnectionStrings__ApplicationDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-$BUILD_ENV;Uid=$DB_USERNAME;pwd=$DB_PASSWORD;Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'
+ENV ConnectionStrings__ISGrantDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-$BUILD_ENV-grant-v6;Uid=$DB_USERNAME;pwd=$DB_PASSWORD;Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'
+ENV ConnectionStrings__ISConfigDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-$BUILD_ENV-config-v6;Uid=$DB_USERNAME;pwd=$DB_PASSWORD;Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'
+ENV ConnectionStrings__Redis='redis-internal'
+ENV RedisServer__RedisInstanceName='account:$BUILD_ENV:'
+ENV RedisServer__RedisCacheConfiguration='redis-internal,password=$REDIS_PASSWORD'
+ENV RedisServer__ConnectionMultiplexer='redis-internal,allowAdmin=true,password=$REDIS_PASSWORD'
+
+RUN apt-get update -yq && \
+    apt-get install -yq curl gnupg ca-certificates
+
+# Add NodeSource GPG key
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+# Add Node.js 20.x repository
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+
+# Update package lists and install Node.js
+RUN apt-get update -yq && \
+    apt-get install -yq nodejs
 
 RUN dotnet publish "./AccountService.Server/AccountService.Server.csproj" --configfile "./NuGet.Config" -c "${BUILD_ENV}" -o /out
 
