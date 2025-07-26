@@ -27,7 +27,7 @@ ENV RedisServer__RedisInstanceName="account:$BUILD_ENV:"
 ENV RedisServer__RedisCacheConfiguration="redis-internal,password=$REDIS_PASSWORD"
 ENV RedisServer__RedisInstanceName="redis-internal,allowAdmin=true,password=$REDIS_PASSWORD"
 
-RUN dotnet publish "./AccountService.Server/AccountService.Server.csproj" --configfile "./NuGet.Config" -c "${BUILD_ENV}" -o /out
+RUN dotnet publish --configfile "./NuGet.Config" -c "${BUILD_ENV}" -o /out
 
 
 
