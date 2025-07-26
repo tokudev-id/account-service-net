@@ -34,14 +34,18 @@ jobs:
       - name: Build and push Docker image
         run: |
           BUILD_ENVIRONMENT="release"
+          DB_USERNAME="${{ secrets.DB_USERNAME }}"
+          DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
           if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
             BUILD_ENVIRONMENT="sandbox"
+            DB_USERNAME="${{ secrets.DB_USERNAME_SANDBOX }}"
+            DB_PASSWORD="${{ secrets.DB_PASSWORD_SANDBOX }}"
           fi
           docker build \
             -t ${{ env.IMAGE_NAME }}:latest \
             --build-arg BUILD_ENV="$BUILD_ENVIRONMENT" \
-            --build-arg DB_USERNAME="${{ secrets.DB_USERNAME }}" \
-            --build-arg DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            --build-arg DB_USERNAME="$DB_USERNAME" \
+            --build-arg DB_PASSWORD="$DB_PASSWORD" \
             --build-arg REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
             -f Dockerfile \
             .
