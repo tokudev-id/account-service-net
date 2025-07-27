@@ -71,9 +71,10 @@ jobs:
           echo "UPSTREAM_NAME=app_mres_account_service" >> $GITHUB_OUTPUT
           echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
           echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
+          echo "ASPNETCORE_ENVIRONMENT=Production" >> $GITHUB_OUTPUT
           echo "ConnectionStrings__DefaultConnection='Server=mysql-server;Port=3306;Database=account-service-release;Uid=${{ secrets.DB_USERNAME }};Pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;'" >> $GITHUB_OUTPUT
           echo "ConnectionStrings__DbPassword=${{ secrets.DB_PASSWORD }}" >> $GITHUB_OUTPUT
-          echo "RedisServer__CacheConfiguration='redis-internal'" >> $GITHUB_OUTPUT
+          echo "RedisServer__CacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
           echo "RedisServer__InstanceName='account:release:'" >> $GITHUB_OUTPUT
           echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
 
@@ -85,6 +86,7 @@ jobs:
             echo "UPSTREAM_NAME=app_mres_account_sandbox_service" >> $GITHUB_OUTPUT
             echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
             echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
+            echo "ASPNETCORE_ENVIRONMENT=Sandbox" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__DefaultConnection='Server=mysql-server;Port=3306;Database=account-service-sandbox;Uid=${{ secrets.DB_USERNAME }};Pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;'" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__DbPassword=${{ secrets.DB_PASSWORD }}" >> $GITHUB_OUTPUT
             echo "RedisServer__CacheConfiguration='redis-internal'" >> $GITHUB_OUTPUT
@@ -104,6 +106,7 @@ jobs:
           APP_API_HEALTH=${{ steps.env_setup.outputs.APP_API_HEALTH }}
           COMPOSE_PROJECT_NAME=${{ steps.env_setup.outputs.COMPOSE_PROJECT_NAME }}
           CONTAINER_PROJECT_NAME=${{ steps.env_setup.outputs.CONTAINER_PROJECT_NAME }}
+          ASPNETCORE_ENVIRONMENT=${{ steps.env_setup.outputs.ASPNETCORE_ENVIRONMENT }}
           ConnectionStrings__DefaultConnection=${{ steps.env_setup.outputs.ConnectionStrings__DefaultConnection }}
           ConnectionStrings__DbPassword=${{ steps.env_setup.outputs.ConnectionStrings__DbPassword }}
           RedisServer__CacheConfiguration=${{ steps.env_setup.outputs.RedisServer__CacheConfiguration }}

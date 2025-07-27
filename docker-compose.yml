@@ -4,6 +4,7 @@ services:
   blue:
     image: ${IMAGE_NAME}:latest
     environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
       - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
       - RedisServer__CacheConfiguration=${RedisServer__CacheConfiguration}
@@ -19,6 +20,7 @@ services:
   green:
     image: ${IMAGE_NAME}:latest
     environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
       - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
       - RedisServer__CacheConfiguration=${RedisServer__CacheConfiguration}
