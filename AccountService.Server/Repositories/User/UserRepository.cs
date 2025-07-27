@@ -1,5 +1,7 @@
+using AccountService.Server.Data;
 using AccountService.Server.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AccountService.Server.Repositories.User
@@ -7,10 +9,14 @@ namespace AccountService.Server.Repositories.User
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _dbContext;
 
-        public UserRepository(UserManager<ApplicationUser> userManager)
+        public UserRepository(
+            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
+            _dbContext = applicationDbContext;
         }
 
         public async Task<ApplicationUser> FindByEmailAsync(string email)
@@ -39,6 +45,17 @@ namespace AccountService.Server.Repositories.User
             return claims
                 .Where(claim => claimTypes.Contains(claim.Type))
                 .ToDictionary(claim => claim.Type, claim => (object)claim.Value);
+        }
+
+        public async Task<ApplicationUser?> FindByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        }
+        public async Task<bool> UpdateUserAsync(ApplicationUser user)
+        {
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
         }
     }
 }

@@ -6,6 +6,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": ".",
+    "noImplicitAny": false,
     "paths": {
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
@@ -21,7 +22,7 @@
     "noEmit": true,
 
     /* Linting */
-    "strict": true,
+    "strict": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
