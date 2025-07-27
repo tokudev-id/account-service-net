@@ -35,7 +35,7 @@ export default function RootLayout() {
         </div>
       </main> */}
       <main className="min-h-[calc(100vh-theme(spacing.14))] flex flex-col">
-        <div className="flex-1 bg-secondary">
+        <div className="flex-1 bg-muted/40">
           <Outlet />
         </div>
       </main>

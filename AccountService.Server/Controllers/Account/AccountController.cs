@@ -68,6 +68,22 @@ namespace AccountService.Server.Controllers
             return BadRequest();
         }
 
+        [HttpGet("error")]
+        public async Task<IActionResult> Error(string errorId)
+        {
+            var errorInfo = await _interaction.GetErrorContextAsync(errorId);
+            if (errorInfo != null)
+            {
+                return Ok(new
+                {
+                    errorInfo.Error,
+                    errorInfo.ErrorDescription
+                });
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {

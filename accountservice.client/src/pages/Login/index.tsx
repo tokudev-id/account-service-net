@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -66,7 +67,7 @@ const LoginFormComponent: FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Login to Your Account</CardTitle>
+        <CardTitle>Sign in to Your Account</CardTitle>
         <CardDescription>Enter your email and password to access your dashboard.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -200,14 +201,14 @@ const LoginFormComponent: FC = () => {
         )}
       </CardContent>
 
-      {/*<CardFooter className="flex flex-col items-center space-y-2">*/}
-      {/*  <p className="text-sm text-muted-foreground">*/}
-      {/*    Don't have an account?{' '}*/}
-      {/*    <Link to={registerHref} className="text-primary hover:underline">*/}
-      {/*      Register here*/}
-      {/*    </Link>*/}
-      {/*  </p>*/}
-      {/*</CardFooter>*/}
+      <CardFooter className="flex flex-col items-center space-y-2">
+       <p className="text-sm text-muted-foreground">
+         Don't have an account?{' '}
+         <Link to={'/register'} className="text-primary hover:underline">
+           Register here
+         </Link>
+       </p>
+      </CardFooter>
     </Card>
   );
 };

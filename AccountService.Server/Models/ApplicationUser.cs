@@ -16,6 +16,7 @@ namespace AccountService.Server.Models
         [MaxLength(32)]
         public string? LoginProvider { get; set; }
         public ApplicationUser? LinkedUser { get; set; }
+        public string? PinHash { get; set; } = "";
 
         public bool? IsOolean { get; set; }
         public DateTime? LastLogin { get; set; }

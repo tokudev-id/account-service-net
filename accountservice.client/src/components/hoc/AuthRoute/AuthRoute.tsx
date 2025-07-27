@@ -7,7 +7,7 @@ export const AuthRoute = () => {
     const { shouldRedirectToHome, isLoading } = useAuth();
 
     if (isLoading) {
-        return <div>Loading...</div>; // or your loading spinner
+        return <div></div>; // or your loading spinner
     }
 
     if (shouldRedirectToHome()) {

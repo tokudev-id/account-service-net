@@ -1,5 +1,6 @@
 ﻿using AccountService.Server.Data;
 using AccountService.Server.Identity;
+using AccountService.Server.Middleware;
 using AccountService.Server.Models;
 using AccountService.Server.Repositories.User;
 using AccountService.Server.Services.Authentication;
@@ -67,7 +68,8 @@ namespace AccountService.Server.Extensions
                 options.EnableTokenCleanup = true;
             })
             .AddAspNetIdentity<ApplicationUser>()
-            .AddProfileService<AccountProfileService>();
+            .AddProfileService<AccountProfileService>()
+            .AddResourceOwnerValidator<PinResourceOwnerPasswordValidator>();
 
             SetupSession(services, redisConfig);
             // Register all your other services
@@ -89,13 +91,14 @@ namespace AccountService.Server.Extensions
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
 
             // Use a descriptive policy name
             app.UseCors("DefaultCorsPolicy");
@@ -151,6 +154,7 @@ namespace AccountService.Server.Extensions
             //services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
             // Add other singletons...
 
+            services.AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
             // scoped Repository
             services.AddScoped<IUserRepository, UserRepository>();
             // Scoped Services
@@ -231,6 +235,7 @@ namespace AccountService.Server.Extensions
             services.ConfigureApplicationCookie(options =>
             {
                 options.LogoutPath = "/api/auth/logout";
+                options.LoginPath = "/login";
                 options.Events.OnRedirectToLogin = context =>
                 {
                     context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;

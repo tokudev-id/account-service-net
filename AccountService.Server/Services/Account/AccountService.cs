@@ -11,12 +11,16 @@ namespace AccountService.Server.Services.Account
     {
         private readonly IUserRepository _userRepository;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
 
-
-        public AccountService(IUserRepository userRepository, SignInManager<ApplicationUser> signInManager)
+        public AccountService(
+            IUserRepository userRepository,
+            SignInManager<ApplicationUser> signInManager,
+            IPasswordHasher<ApplicationUser> passwordHasher)
         {
             _userRepository = userRepository;
             _signInManager = signInManager;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<ApplicationUser?> FindUserByIdAsync(string id)
@@ -48,5 +52,26 @@ namespace AccountService.Server.Services.Account
             return result ? IdentityResult.Success : IdentityResult.Failed(new IdentityError { Description = "User creation failed." });
         }
 
+        public async Task<bool> ValidateUserWithPinAsync(string phoneNumber, string pin)
+        {
+            var user = await _userRepository.FindByPhoneNumberAsync(phoneNumber);
+            if (user == null || string.IsNullOrEmpty(user.PinHash))
+            {
+                return false;
+            }
+
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PinHash, pin);
+            return result == PasswordVerificationResult.Success;
+        }
+
+        public async Task<bool> SetUserPinAsync(string userId, string pin)
+        {
+            var user = await _userRepository.FindUserByIdAsync(userId);
+            if (user == null)
+                return false;
+
+            user.PinHash = _passwordHasher.HashPassword(user, pin);
+            return await _userRepository.UpdateUserAsync(user);
+        }
     }
 }
