@@ -130,11 +130,11 @@ jobs:
           echo "Starting deployment to standby slot: $STANDBY_COLOR"
 
           # Export secrets as shell environment variables
-          export ConnectionStrings__DefaultConnection="${{ secrets.ConnectionStrings__DefaultConnection }}"
-          export ConnectionStrings__DbPassword="${{ secrets.ConnectionStrings__DbPassword }}"
-          export RedisServer__CacheConfiguration="${{ secrets.RedisServer__CacheConfiguration }}"
-          export RedisServer__InstanceName="${{ secrets.RedisServer__InstanceName }}"
-          export RedisServer__ConnectionMultiplexer="${{ secrets.RedisServer__ConnectionMultiplexer }}"
+          export ConnectionStrings__DefaultConnection=$ConnectionStrings__DefaultConnection
+          export ConnectionStrings__DbPassword=$ConnectionStrings__DbPassword
+          export RedisServer__CacheConfiguration=$RedisServer__CacheConfiguration
+          export RedisServer__InstanceName=$RedisServer__InstanceName
+          export RedisServer__ConnectionMultiplexer=$RedisServer__ConnectionMultiplexer
           export BLUE_PORT=$BLUE_PORT
           export GREEN_PORT=$GREEN_PORT
           export CONTAINER_PROJECT_NAME=$CONTAINER_PROJECT_NAME
