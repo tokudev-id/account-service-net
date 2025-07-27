@@ -89,7 +89,7 @@ jobs:
             echo "ASPNETCORE_ENVIRONMENT=Sandbox" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__DefaultConnection='Server=mysql-server;Port=3306;Database=account-service-sandbox;Uid=${{ secrets.DB_USERNAME }};Pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;'" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__DbPassword=${{ secrets.DB_PASSWORD }}" >> $GITHUB_OUTPUT
-            echo "RedisServer__RedisCacheConfiguration='redis-internal'" >> $GITHUB_OUTPUT
+            echo "RedisServer__RedisCacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
             echo "RedisServer__RedisInstanceName='account:sandbox:'" >> $GITHUB_OUTPUT
             echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
           fi
