@@ -48,6 +48,7 @@ jobs:
             --build-arg BUILD_ENV="$BUILD_ENVIRONMENT" \
             --build-arg DB_USERNAME="$DB_USERNAME" \
             --build-arg DB_PASSWORD="$DB_PASSWORD" \
+            --build-arg ASPNETCORE_ENVIRONMENT="$ASPNETCORE_ENVIRONMENT" \
             --build-arg REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
             -f Dockerfile \
             .
