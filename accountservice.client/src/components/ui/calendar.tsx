@@ -2,114 +2,115 @@
 "use client"
 
 import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { DayPicker, useDayPicker, useNavigation } from "react-day-picker"
-import { format } from "date-fns"
+import { DayPicker } from "react-day-picker"
+// import { format } from "date-fns"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select" // Import Shadcn Select
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select" // Import Shadcn Select
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
 // Custom Caption Component
-function CustomCalendarCaption(props: { displayMonth: Date }): JSX.Element {
-  const {
-    fromDate,
-    toDate,
-    fromMonth: fromMonthProp,
-    toMonth: toMonthProp,
-    fromYear: fromYearProp,
-    toYear: toYearProp,
-  } = useDayPicker()
-  const { goToMonth, currentMonth } = useNavigation()
+// function CustomCalendarCaption(props: { displayMonth: Date }): React.JSX.Element {
+//   const { dayPickerProps, goToMonth } = useDayPicker();
 
-  const currentYear = currentMonth.getFullYear()
-  const currentMonthIndex = currentMonth.getMonth() // 0-indexed
+//   const {
+//     fromDate,
+//     toDate,
+//     fromMonth: fromMonthProp,
+//     toMonth: toMonthProp,
+//     fromYear: fromYearProp,
+//     toYear: toYearProp,
+//   } = dayPickerProps;
 
-  const fromYear = fromYearProp || fromDate?.getFullYear() || new Date().getFullYear() - 100;
-  const toYear = toYearProp || toDate?.getFullYear() || new Date().getFullYear();
+//   const currentMonth = props.displayMonth;
+//   const currentYear = currentMonth.getFullYear();
+//   const currentMonthIndex = currentMonth.getMonth();
 
-  const years = []
-  for (let i = fromYear; i <= toYear; i++) {
-    years.push({ label: i.toString(), value: i.toString() })
-  }
+//   const fromYear = fromYearProp ?? fromDate?.getFullYear() ?? currentYear - 100;
+//   const toYear = toYearProp ?? toDate?.getFullYear() ?? currentYear;
 
-  const months = []
-  for (let i = 0; i < 12; i++) {
-    // Check if month is within range for the selected year
-    const monthDate = new Date(currentYear, i);
-    let isDisabled = false;
-    if (fromMonthProp && monthDate < fromMonthProp && currentYear === fromMonthProp.getFullYear()) {
-      isDisabled = true;
-    }
-    if (toMonthProp && monthDate > toMonthProp && currentYear === toMonthProp.getFullYear()) {
-      isDisabled = true;
-    }
+//   const years = []
+//   for (let i = fromYear; i <= toYear; i++) {
+//     years.push({ label: i.toString(), value: i.toString() })
+//   }
 
-    months.push({
-      label: format(new Date(0, i), "MMMM"),
-      value: i.toString(),
-      disabled: isDisabled,
-    })
-  }
+//   const months = []
+//   for (let i = 0; i < 12; i++) {
+//     // Check if month is within range for the selected year
+//     const monthDate = new Date(currentYear, i);
+//     let isDisabled = false;
+//     if (fromMonthProp && monthDate < fromMonthProp && currentYear === fromMonthProp.getFullYear()) {
+//       isDisabled = true;
+//     }
+//     if (toMonthProp && monthDate > toMonthProp && currentYear === toMonthProp.getFullYear()) {
+//       isDisabled = true;
+//     }
 
-  const handleYearChange = (value: string) => {
-    const newYear = parseInt(value, 10)
-    const newDate = new Date(newYear, currentMonthIndex, 1)
-    goToMonth(newDate)
-  }
+//     months.push({
+//       label: format(new Date(0, i), "MMMM"),
+//       value: i.toString(),
+//       disabled: isDisabled,
+//     })
+//   }
 
-  const handleMonthChange = (value: string) => {
-    const newMonth = parseInt(value, 10)
-    const newDate = new Date(currentYear, newMonth, 1)
-    goToMonth(newDate)
-  }
+//   const handleYearChange = (value: string) => {
+//     const newYear = parseInt(value, 10)
+//     const newDate = new Date(newYear, currentMonthIndex, 1)
+//     goToMonth(newDate)
+//   }
 
-  return (
-    <div className="flex items-center justify-center gap-2 p-2 rdp-caption">
-      <span className="text-sm font-medium text-muted-foreground">Year:</span>
-      <Select
-        value={currentYear.toString()}
-        onValueChange={handleYearChange}
-      >
-        <SelectTrigger className="h-8 w-[80px] text-sm focus:ring-0 focus:ring-offset-0">
-          <SelectValue placeholder="Year" />
-        </SelectTrigger>
-        <SelectContent>
-          {years.map((year) => (
-            <SelectItem key={year.value} value={year.value}>
-              {year.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+//   const handleMonthChange = (value: string) => {
+//     const newMonth = parseInt(value, 10)
+//     const newDate = new Date(currentYear, newMonth, 1)
+//     goToMonth(newDate)
+//   }
 
-      <span className="text-sm font-medium text-muted-foreground">Month:</span>
-      <Select
-        value={currentMonthIndex.toString()}
-        onValueChange={handleMonthChange}
-      >
-        <SelectTrigger className="h-8 w-[120px] text-sm focus:ring-0 focus:ring-offset-0">
-          <SelectValue placeholder="Month" />
-        </SelectTrigger>
-        <SelectContent>
-          {months.map((month) => (
-            <SelectItem key={month.value} value={month.value} disabled={month.disabled}>
-              {month.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  )
-}
+//   return (
+//     <div className="flex items-center justify-center gap-2 p-2 rdp-caption">
+//       <span className="text-sm font-medium text-muted-foreground">Year:</span>
+//       <Select
+//         value={currentYear.toString()}
+//         onValueChange={handleYearChange}
+//       >
+//         <SelectTrigger className="h-8 w-[80px] text-sm focus:ring-0 focus:ring-offset-0">
+//           <SelectValue placeholder="Year" />
+//         </SelectTrigger>
+//         <SelectContent>
+//           {years.map((year) => (
+//             <SelectItem key={year.value} value={year.value}>
+//               {year.label}
+//             </SelectItem>
+//           ))}
+//         </SelectContent>
+//       </Select>
+
+//       <span className="text-sm font-medium text-muted-foreground">Month:</span>
+//       <Select
+//         value={currentMonthIndex.toString()}
+//         onValueChange={handleMonthChange}
+//       >
+//         <SelectTrigger className="h-8 w-[120px] text-sm focus:ring-0 focus:ring-offset-0">
+//           <SelectValue placeholder="Month" />
+//         </SelectTrigger>
+//         <SelectContent>
+//           {months.map((month) => (
+//             <SelectItem key={month.value} value={month.value} disabled={month.disabled}>
+//               {month.label}
+//             </SelectItem>
+//           ))}
+//         </SelectContent>
+//       </Select>
+//     </div>
+//   )
+// }
 
 function Calendar({
   className,
@@ -117,6 +118,7 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -154,15 +156,18 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        Caption: CustomCalendarCaption, // Use the custom caption component
-        IconLeft: ({ className: iconClassName, ...rest }) => (
-          <ChevronLeft className={cn("h-4 w-4", iconClassName)} {...rest} />
-        ),
-        IconRight: ({ className: iconClassName, ...rest }) => (
-          <ChevronRight className={cn("h-4 w-4", iconClassName)} {...rest} />
-        ),
-      }}
+      captionLayout="dropdown"
+      // captionLabel={({ displayMonth }) => (
+        
+      // )}
+      // components={{
+      //   IconLeft: ({ className: iconClassName, ...rest }) => (
+      //     <ChevronLeft className={cn("h-4 w-4", iconClassName)} {...rest} />
+      //   ),
+      //   IconRight: ({ className: iconClassName, ...rest }) => (
+      //     <ChevronRight className={cn("h-4 w-4", iconClassName)} {...rest} />
+      //   ),
+      // }}
       // captionLayout prop is not needed as we provide a custom Caption component
       {...props}
     />

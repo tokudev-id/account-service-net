@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Eye, EyeOff, XCircle, MailQuestion, ChefHat } from 'lucide-react';
+import { Loader2, Eye, EyeOff, XCircle, MailQuestion } from 'lucide-react';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 const GoogleSignInButton: FC<{ oidcOriginalRequest?: string | null }> = ({ oidcOriginalRequest }) => {

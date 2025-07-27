@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 // import ImageUploadModal from '@/components/profile/image-upload-modal';
 import { Separator } from '@/components/ui/separator';
 
-import { Mail, Edit3, LogOut, KeyRound, ShieldAlert, Pencil } from 'lucide-react';
+import { Mail, LogOut, KeyRound } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 // import { useProfile } from '@/hooks/use-profile';
 import {
@@ -18,7 +18,7 @@ import {
   type DropdownOption,
 } from '@lib/dropdown-options';
 import { format, parseISO } from 'date-fns';
-import { useToast } from '@/hooks/use-toast';
+// import { useToast } from '@/hooks/use-toast';
 import { useProfile } from '@/hooks/use-profile';
 
 interface ProfileFieldDisplayProps {
@@ -41,17 +41,17 @@ const ProfilePage: React.FC = () => {
     isLoading,
     error,
     isEditing,
-    setIsEditing,
+    // setIsEditing,
     handleLogout,
-    fetchUserInfo,
+    // fetchUserInfo,
   } = useProfile();
-  const { toast } = useToast();
+  // const { toast } = useToast();
 
   const [showSetPasswordForm, setShowSetPasswordForm] = useState(false);
-  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
-  const [isImageUploadModalOpen, setIsImageUploadModalOpen] = useState(false);
-  const [pendingProfilePicture, setPendingProfilePicture] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  // const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
+  // const [isImageUploadModalOpen, setIsImageUploadModalOpen] = useState(false);
+  // const [pendingProfilePicture, setPendingProfilePicture] = useState<File | null>(null);
+  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const findLabel = useCallback((options: DropdownOption[], value?: string): string | undefined => {
     if (!value) return undefined;
@@ -85,49 +85,49 @@ const ProfilePage: React.FC = () => {
     };
   }, [userInfo]);
 
-  const handleCancelEdit = useCallback(() => {
-    setIsEditing(false);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPendingProfilePicture(null);
-    setPreviewUrl(null);
-  }, [setIsEditing, previewUrl]);
+  // const handleCancelEdit = useCallback(() => {
+  //   setIsEditing(false);
+  //   if (previewUrl) URL.revokeObjectURL(previewUrl);
+  //   setPendingProfilePicture(null);
+  //   setPreviewUrl(null);
+  // }, [setIsEditing, previewUrl]);
 
-  const handleEditProfileSuccess = useCallback(() => {
-    setIsEditing(false);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPendingProfilePicture(null);
-    setPreviewUrl(null);
-    fetchUserInfo();
-  }, [setIsEditing, fetchUserInfo, previewUrl]);
+  // const handleEditProfileSuccess = useCallback(() => {
+  //   setIsEditing(false);
+  //   if (previewUrl) URL.revokeObjectURL(previewUrl);
+  //   setPendingProfilePicture(null);
+  //   setPreviewUrl(null);
+  //   fetchUserInfo();
+  // }, [setIsEditing, fetchUserInfo, previewUrl]);
 
-  const handleSetPasswordSuccess = () => {
-    setShowSetPasswordForm(false);
-    toast({ title: "Password Set", description: "Your password has been set. You will now be logged out." });
-    handleLogout();
-  };
+  // const handleSetPasswordSuccess = () => {
+  //   setShowSetPasswordForm(false);
+  //   toast({ title: "Password Set", description: "Your password has been set. You will now be logged out." });
+  //   handleLogout();
+  // };
 
-  const handleChangePasswordSuccess = () => {
-    setShowChangePasswordForm(false);
-    toast({ title: "Password Changed", description: "Your password has been changed. You will now be logged out." });
-    handleLogout();
-  };
+  // const handleChangePasswordSuccess = () => {
+  //   setShowChangePasswordForm(false);
+  //   toast({ title: "Password Changed", description: "Your password has been changed. You will now be logged out." });
+  //   handleLogout();
+  // };
 
-  const handleCropConfirm = (croppedFile: File) => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPendingProfilePicture(croppedFile);
-    setPreviewUrl(URL.createObjectURL(croppedFile));
-    setIsImageUploadModalOpen(false);
-  };
+  // const handleCropConfirm = (croppedFile: File) => {
+  //   if (previewUrl) URL.revokeObjectURL(previewUrl);
+  //   setPendingProfilePicture(croppedFile);
+  //   setPreviewUrl(URL.createObjectURL(croppedFile));
+  //   setIsImageUploadModalOpen(false);
+  // };
 
-  useEffect(() => {
-    const currentPreview = previewUrl;
-    return () => {
-      if (currentPreview) URL.revokeObjectURL(currentPreview);
-    };
-  }, [previewUrl]);
+  // useEffect(() => {
+  //   const currentPreview = previewUrl;
+  //   return () => {
+  //     if (currentPreview) URL.revokeObjectURL(currentPreview);
+  //   };
+  // }, [previewUrl]);
 
-  const isFormActive = isEditing || showSetPasswordForm || showChangePasswordForm;
-  const currentAvatarSrc = previewUrl || userInfo?.picture || `https://placehold.co/100x100.png?text=${(userInfo?.name || 'U').charAt(0)}`;
+  const isFormActive = isEditing || showSetPasswordForm; // || showChangePasswordForm;
+  const currentAvatarSrc = userInfo?.picture || `https://placehold.co/100x100.png?text=${(userInfo?.name || 'U').charAt(0)}`;
 
   if (isLoading && !userInfo) {
     return (
@@ -158,11 +158,11 @@ const ProfilePage: React.FC = () => {
               <div className="flex items-center space-x-4 mb-4 sm:mb-0">
                 <div className="relative group">
                   <img src={currentAvatarSrc} alt={userInfo.name || 'User Avatar'} width={80} height={80} className="rounded-full border-2 border-background shadow-md object-cover" />
-                  {isEditing && (
+                  {/* {isEditing && (
                     <Button variant="outline" size="icon" className="absolute bottom-0 right-0 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-background/70 hover:bg-background" onClick={() => setIsImageUploadModalOpen(true)} title="Change Profile Picture">
                       <Pencil className="h-4 w-4" />
                     </Button>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <h1 className="text-2xl font-semibold text-foreground">{userInfo.name || 'User Name'}</h1>
@@ -195,10 +195,12 @@ const ProfilePage: React.FC = () => {
             ) : showSetPasswordForm ? (
                 <></>
             //   <SetPasswordForm onSuccess={handleSetPasswordSuccess} onCancel={() => setShowSetPasswordForm(false)} />
-            ) : showChangePasswordForm ? (
-                <></>
-            //   <ChangePasswordForm onSuccess={handleChangePasswordSuccess} onCancel={() => setShowChangePasswordForm(false)} />
-            ) : userInfo ? (
+            ) 
+            // : showChangePasswordForm ? (
+            //     <></>
+            // //   <ChangePasswordForm onSuccess={handleChangePasswordSuccess} onCancel={() => setShowChangePasswordForm(false)} />
+            // ) 
+            : userInfo ? (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
                   <ProfileFieldDisplay label="Full Name" value={userInfo.name} />

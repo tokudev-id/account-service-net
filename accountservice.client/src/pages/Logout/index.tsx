@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import { useEffect, Fragment, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 // Placeholder for your loading component
