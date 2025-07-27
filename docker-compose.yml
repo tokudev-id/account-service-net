@@ -7,8 +7,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
       - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
-      - RedisServer__CacheConfiguration=${RedisServer__CacheConfiguration}
-      - RedisServer__InstanceName=${RedisServer__InstanceName}
+      - RedisServer__RedisCacheConfiguration=${RedisServer__RedisCacheConfiguration}
+      - RedisServer__RedisInstanceName=${RedisServer__RedisInstanceName}
       - RedisServer__ConnectionMultiplexer=${RedisServer__ConnectionMultiplexer}
     container_name: ${CONTAINER_PROJECT_NAME}-blue # Now dynamic!
     restart: unless-stopped
@@ -23,8 +23,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
       - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
-      - RedisServer__CacheConfiguration=${RedisServer__CacheConfiguration}
-      - RedisServer__InstanceName=${RedisServer__InstanceName}
+      - RedisServer__RedisCacheConfiguration=${RedisServer__RedisCacheConfiguration}
+      - RedisServer__RedisInstanceName=${RedisServer__RedisInstanceName}
       - RedisServer__ConnectionMultiplexer=${RedisServer__ConnectionMultiplexer}
     container_name: ${CONTAINER_PROJECT_NAME}-green # Now dynamic!
     restart: unless-stopped

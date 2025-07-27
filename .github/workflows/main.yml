@@ -74,8 +74,8 @@ jobs:
           echo "ASPNETCORE_ENVIRONMENT=Production" >> $GITHUB_OUTPUT
           echo "ConnectionStrings__DefaultConnection='Server=mysql-server;Port=3306;Database=account-service-release;Uid=${{ secrets.DB_USERNAME }};Pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;'" >> $GITHUB_OUTPUT
           echo "ConnectionStrings__DbPassword=${{ secrets.DB_PASSWORD }}" >> $GITHUB_OUTPUT
-          echo "RedisServer__CacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
-          echo "RedisServer__InstanceName='account:release:'" >> $GITHUB_OUTPUT
+          echo "RedisServer__RedisCacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
+          echo "RedisServer__RedisInstanceName='account:release:'" >> $GITHUB_OUTPUT
           echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
 
           if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
@@ -89,8 +89,8 @@ jobs:
             echo "ASPNETCORE_ENVIRONMENT=Sandbox" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__DefaultConnection='Server=mysql-server;Port=3306;Database=account-service-sandbox;Uid=${{ secrets.DB_USERNAME }};Pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;'" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__DbPassword=${{ secrets.DB_PASSWORD }}" >> $GITHUB_OUTPUT
-            echo "RedisServer__CacheConfiguration='redis-internal'" >> $GITHUB_OUTPUT
-            echo "RedisServer__InstanceName='account:sandbox:'" >> $GITHUB_OUTPUT
+            echo "RedisServer__RedisCacheConfiguration='redis-internal'" >> $GITHUB_OUTPUT
+            echo "RedisServer__RedisInstanceName='account:sandbox:'" >> $GITHUB_OUTPUT
             echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
           fi
 
@@ -109,8 +109,8 @@ jobs:
           ASPNETCORE_ENVIRONMENT=${{ steps.env_setup.outputs.ASPNETCORE_ENVIRONMENT }}
           ConnectionStrings__DefaultConnection=${{ steps.env_setup.outputs.ConnectionStrings__DefaultConnection }}
           ConnectionStrings__DbPassword=${{ steps.env_setup.outputs.ConnectionStrings__DbPassword }}
-          RedisServer__CacheConfiguration=${{ steps.env_setup.outputs.RedisServer__CacheConfiguration }}
-          RedisServer__InstanceName=${{ steps.env_setup.outputs.RedisServer__InstanceName }}
+          RedisServer__RedisCacheConfiguration=${{ steps.env_setup.outputs.RedisServer__RedisCacheConfiguration }}
+          RedisServer__RedisInstanceName=${{ steps.env_setup.outputs.RedisServer__RedisInstanceName }}
           RedisServer__ConnectionMultiplexer=${{ steps.env_setup.outputs.RedisServer__ConnectionMultiplexer }}
 
           # 1. Determine which environment is live and which is standby
@@ -135,12 +135,13 @@ jobs:
           # Export secrets as shell environment variables
           export ConnectionStrings__DefaultConnection=$ConnectionStrings__DefaultConnection
           export ConnectionStrings__DbPassword=$ConnectionStrings__DbPassword
-          export RedisServer__CacheConfiguration=$RedisServer__CacheConfiguration
-          export RedisServer__InstanceName=$RedisServer__InstanceName
+          export RedisServer__RedisCacheConfiguration=$RedisServer__RedisCacheConfiguration
+          export RedisServer__RedisInstanceName=$RedisServer__RedisInstanceName
           export RedisServer__ConnectionMultiplexer=$RedisServer__ConnectionMultiplexer
           export BLUE_PORT=$BLUE_PORT
           export GREEN_PORT=$GREEN_PORT
           export CONTAINER_PROJECT_NAME=$CONTAINER_PROJECT_NAME
+          export ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
 
           # 2. Start the standby container with the new image
           docker compose -p $COMPOSE_PROJECT_NAME up -d --wait --wait-timeout 60 --no-deps --force-recreate \
