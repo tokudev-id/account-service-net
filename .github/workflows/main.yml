@@ -34,10 +34,12 @@ jobs:
       - name: Build and push Docker image
         run: |
           BUILD_ENVIRONMENT="release"
+          ASPNETCORE_ENVIRONMENT="Production"
           DB_USERNAME="${{ secrets.DB_USERNAME }}"
           DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
           if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
             BUILD_ENVIRONMENT="sandbox"
+            ASPNETCORE_ENVIRONMENT="Sandbox"
             DB_USERNAME="${{ secrets.DB_USERNAME_SANDBOX }}"
             DB_PASSWORD="${{ secrets.DB_PASSWORD_SANDBOX }}"
           fi

@@ -16,6 +16,7 @@ ARG DB_USERNAME
 ARG DB_PASSWORD
 ARG REDIS_PASSWORD
 ARG BUILD_ENV
+ARG ASPNETCORE_ENVIRONMENT
 
 # Set environment variables for the .NET application at build time
 # These will be available to the application when it runs
@@ -26,6 +27,7 @@ ENV ConnectionStrings__Redis='redis-internal,password=$REDIS_PASSWORD'
 ENV RedisServer__RedisInstanceName='account:$BUILD_ENV:'
 ENV RedisServer__RedisCacheConfiguration='redis-internal,password=$REDIS_PASSWORD'
 ENV RedisServer__ConnectionMultiplexer='redis-internal,allowAdmin=true,password=$REDIS_PASSWORD'
+ENV ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
 
 RUN apt-get update -yq && \
     apt-get install -yq curl gnupg ca-certificates
