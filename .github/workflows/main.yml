@@ -71,8 +71,10 @@ jobs:
           echo "UPSTREAM_NAME=app_mres_restaurant_service" >> $GITHUB_OUTPUT
           echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
           echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
-          echo "ConnectionStrings__DefaultConnection='Server=mysql-server;Port=3306;Database=db_mres_restaurant_release;Uid=${{ secrets.DB_USERNAME }};Pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;'" >> $GITHUB_OUTPUT
-          echo "ConnectionStrings__DbPassword=${{ secrets.DB_PASSWORD }}" >> $GITHUB_OUTPUT
+          echo "ConnectionStrings__ApplicationDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-release;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+          echo "ConnectionStrings__ISGrantDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-release-grant-v6;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+          echo "ConnectionStrings__ISConfigDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-release-config-v6;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+          echo "ConnectionStrings__Redis='redis-internal:6379'" >> $GITHUB_OUTPUT
           echo "RedisServer__RedisCacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
           echo "RedisServer__RedisInstanceName='restaurant:release:'" >> $GITHUB_OUTPUT
           echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
@@ -85,8 +87,10 @@ jobs:
             echo "UPSTREAM_NAME=app_mres_restaurant_sandbox_service" >> $GITHUB_OUTPUT
             echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
             echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
-            echo "ConnectionStrings__DefaultConnection='Server=mysql-server;Port=3306;Database=db_mres_restaurant_sandbox;Uid=${{ secrets.DB_USERNAME_SANDBOX }};Pwd=${{ secrets.DB_PASSWORD_SANDBOX }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;'" >> $GITHUB_OUTPUT
-            echo "ConnectionStrings__DbPassword=${{ secrets.DB_PASSWORD_SANDBOX }}" >> $GITHUB_OUTPUT
+            echo "ConnectionStrings__ApplicationDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+            echo "ConnectionStrings__ISGrantDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox-grant-v6;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+            echo "ConnectionStrings__ISConfigDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox-config-v6;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+            echo "ConnectionStrings__Redis='redis-internal:6379'" >> $GITHUB_OUTPUT
             echo "RedisServer__RedisCacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
             echo "RedisServer__RedisInstanceName='restaurant:sandbox:'" >> $GITHUB_OUTPUT
             echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
@@ -104,8 +108,10 @@ jobs:
           APP_API_HEALTH=${{ steps.env_setup.outputs.APP_API_HEALTH }}
           COMPOSE_PROJECT_NAME=${{ steps.env_setup.outputs.COMPOSE_PROJECT_NAME }}
           CONTAINER_PROJECT_NAME=${{ steps.env_setup.outputs.CONTAINER_PROJECT_NAME }}
-          ConnectionStrings__DefaultConnection=${{ steps.env_setup.outputs.ConnectionStrings__DefaultConnection }}
-          ConnectionStrings__DbPassword=${{ steps.env_setup.outputs.ConnectionStrings__DbPassword }}
+          ConnectionStrings__ApplicationDBConnectionString=${{ steps.env_setup.outputs.ConnectionStrings__ApplicationDBConnectionString }}
+          ConnectionStrings__ISGrantDBConnectionString=${{ steps.env_setup.outputs.ConnectionStrings__ISGrantDBConnectionString }}
+          ConnectionStrings__ISConfigDBConnectionString=${{ steps.env_setup.outputs.ConnectionStrings__ISConfigDBConnectionString }}
+          ConnectionStrings__Redis=${{ steps.env_setup.outputs.ConnectionStrings__Redis }}
           RedisServer__RedisCacheConfiguration=${{ steps.env_setup.outputs.RedisServer__RedisCacheConfiguration }}
           RedisServer__RedisInstanceName=${{ steps.env_setup.outputs.RedisServer__RedisInstanceName }}
           RedisServer__ConnectionMultiplexer=${{ steps.env_setup.outputs.RedisServer__ConnectionMultiplexer }}
@@ -130,8 +136,10 @@ jobs:
           echo "Starting deployment to standby slot: $STANDBY_COLOR"
 
           # Export secrets as shell environment variables
-          export ConnectionStrings__DefaultConnection=$ConnectionStrings__DefaultConnection
-          export ConnectionStrings__DbPassword=$ConnectionStrings__DbPassword
+          export ConnectionStrings__ApplicationDBConnectionString=$ConnectionStrings__ApplicationDBConnectionString
+          export ConnectionStrings__ISGrantDBConnectionString=$ConnectionStrings__ISGrantDBConnectionString
+          export ConnectionStrings__ISConfigDBConnectionString=$ConnectionStrings__ISConfigDBConnectionString
+          export ConnectionStrings__Redis=$ConnectionStrings__Redis
           export RedisServer__RedisCacheConfiguration=$RedisServer__RedisCacheConfiguration
           export RedisServer__RedisInstanceName=$RedisServer__RedisInstanceName
           export RedisServer__ConnectionMultiplexer=$RedisServer__ConnectionMultiplexer

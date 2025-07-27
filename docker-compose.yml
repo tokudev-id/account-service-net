@@ -5,8 +5,10 @@ services:
     image: ${IMAGE_NAME}:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
-      - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
+      - ConnectionStrings__ApplicationDBConnectionString=${ConnectionStrings__ApplicationDBConnectionString}
+      - ConnectionStrings__ISGrantDBConnectionString=${ConnectionStrings__ISGrantDBConnectionString}
+      - ConnectionStrings__ISConfigDBConnectionString=${ConnectionStrings__ISConfigDBConnectionString}
+      - ConnectionStrings__Redis=${ConnectionStrings__Redis}
       - RedisServer__RedisCacheConfiguration=${RedisServer__RedisCacheConfiguration}
       - RedisServer__RedisInstanceName=${RedisServer__RedisInstanceName}
       - RedisServer__ConnectionMultiplexer=${RedisServer__ConnectionMultiplexer}
@@ -21,8 +23,10 @@ services:
     image: ${IMAGE_NAME}:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
-      - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
+      - ConnectionStrings__ApplicationDBConnectionString=${ConnectionStrings__ApplicationDBConnectionString}
+      - ConnectionStrings__ISGrantDBConnectionString=${ConnectionStrings__ISGrantDBConnectionString}
+      - ConnectionStrings__ISConfigDBConnectionString=${ConnectionStrings__ISConfigDBConnectionString}
+      - ConnectionStrings__Redis=${ConnectionStrings__Redis}
       - RedisServer__RedisCacheConfiguration=${RedisServer__RedisCacheConfiguration}
       - RedisServer__RedisInstanceName=${RedisServer__RedisInstanceName}
       - RedisServer__ConnectionMultiplexer=${RedisServer__ConnectionMultiplexer}
