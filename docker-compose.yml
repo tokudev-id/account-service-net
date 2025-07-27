@@ -3,6 +3,12 @@ version: "3.8"
 services:
   blue:
     image: ${IMAGE_NAME}:latest
+    environment:
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
+      - RedisServer__CacheConfiguration=${RedisServer__CacheConfiguration}
+      - RedisServer__InstanceName=${RedisServer__InstanceName}
+      - RedisServer__ConnectionMultiplexer=${RedisServer__ConnectionMultiplexer}
     container_name: ${CONTAINER_PROJECT_NAME}-blue # Now dynamic!
     restart: unless-stopped
     ports:
@@ -12,6 +18,12 @@ services:
 
   green:
     image: ${IMAGE_NAME}:latest
+    environment:
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - ConnectionStrings__DbPassword=${ConnectionStrings__DbPassword}
+      - RedisServer__CacheConfiguration=${RedisServer__CacheConfiguration}
+      - RedisServer__InstanceName=${RedisServer__InstanceName}
+      - RedisServer__ConnectionMultiplexer=${RedisServer__ConnectionMultiplexer}
     container_name: ${CONTAINER_PROJECT_NAME}-green # Now dynamic!
     restart: unless-stopped
     ports:
