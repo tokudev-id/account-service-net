@@ -4,8 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "devlocal": "vite --mode devlocal",
+    "build:devlocal": "vite build --mode devlocal",
+    "dev": "vite --mode development",
+    "sandbox": "vite --mode sandbox",
+    "build:dev": "vite build --mode development",
+    "build:sandbox": "vite build --mode sandbox",
+    "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },
