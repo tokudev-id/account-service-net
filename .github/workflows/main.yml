@@ -66,9 +66,9 @@ jobs:
           # Default values for release
           echo "BLUE_PORT=30011" >> $GITHUB_OUTPUT
           echo "GREEN_PORT=30012" >> $GITHUB_OUTPUT
-          echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-restaurant-service.conf" >> $GITHUB_OUTPUT
+          echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-account-service.conf" >> $GITHUB_OUTPUT
           echo "APP_API_HEALTH=" >> $GITHUB_OUTPUT
-          echo "UPSTREAM_NAME=app_mres_restaurant_service" >> $GITHUB_OUTPUT
+          echo "UPSTREAM_NAME=app_mres_account_service" >> $GITHUB_OUTPUT
           echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
           echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-release" >> $GITHUB_OUTPUT
           echo "ASPNETCORE_ENVIRONMENT=Production" >> $GITHUB_OUTPUT
@@ -77,15 +77,15 @@ jobs:
           echo "ConnectionStrings__ISConfigDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-release-config-v6;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
           echo "ConnectionStrings__Redis='redis-internal:6379,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
           echo "RedisServer__RedisCacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
-          echo "RedisServer__RedisInstanceName='restaurant:release:'" >> $GITHUB_OUTPUT
+          echo "RedisServer__RedisInstanceName='account:release:'" >> $GITHUB_OUTPUT
           echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
 
           if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
             echo "BLUE_PORT=30013" >> $GITHUB_OUTPUT
             echo "GREEN_PORT=30014" >> $GITHUB_OUTPUT
-            echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-restaurant-service-sandbox.conf" >> $GITHUB_OUTPUT
+            echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-account-service-sandbox.conf" >> $GITHUB_OUTPUT
             echo "APP_API_HEALTH=" >> $GITHUB_OUTPUT
-            echo "UPSTREAM_NAME=app_mres_restaurant_sandbox_service" >> $GITHUB_OUTPUT
+            echo "UPSTREAM_NAME=app_mres_account_sandbox_service" >> $GITHUB_OUTPUT
             echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
             echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
             echo "ASPNETCORE_ENVIRONMENT=Sandbox" >> $GITHUB_OUTPUT
@@ -94,7 +94,7 @@ jobs:
             echo "ConnectionStrings__ISConfigDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox-config-v6;Uid=${{ secrets.DB_USERNAME_SANDBOX }};pwd=${{ secrets.DB_PASSWORD_SANDBOX }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__Redis='redis-internal:6379,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
             echo "RedisServer__RedisCacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
-            echo "RedisServer__RedisInstanceName='restaurant:sandbox:'" >> $GITHUB_OUTPUT
+            echo "RedisServer__RedisInstanceName='account:sandbox:'" >> $GITHUB_OUTPUT
             echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
           fi
 
