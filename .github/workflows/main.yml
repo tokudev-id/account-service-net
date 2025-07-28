@@ -64,8 +64,8 @@ jobs:
         id: env_setup
         run: |
           # Default values for release
-          echo "BLUE_PORT=30011" >> $GITHUB_OUTPUT
-          echo "GREEN_PORT=30012" >> $GITHUB_OUTPUT
+          echo "BLUE_PORT=30027" >> $GITHUB_OUTPUT
+          echo "GREEN_PORT=30028" >> $GITHUB_OUTPUT
           echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-account-service.conf" >> $GITHUB_OUTPUT
           echo "APP_API_HEALTH=" >> $GITHUB_OUTPUT
           echo "UPSTREAM_NAME=app_mres_account_service" >> $GITHUB_OUTPUT
@@ -81,8 +81,8 @@ jobs:
           echo "RedisServer__ConnectionMultiplexer='redis-internal:6379,allowAdmin=true,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
 
           if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
-            echo "BLUE_PORT=30013" >> $GITHUB_OUTPUT
-            echo "GREEN_PORT=30014" >> $GITHUB_OUTPUT
+            echo "BLUE_PORT=30029" >> $GITHUB_OUTPUT
+            echo "GREEN_PORT=30030" >> $GITHUB_OUTPUT
             echo "NGINX_UPSTREAM_CONFIG=/etc/nginx/conf.d/upstream-mres-account-service-sandbox.conf" >> $GITHUB_OUTPUT
             echo "APP_API_HEALTH=" >> $GITHUB_OUTPUT
             echo "UPSTREAM_NAME=app_mres_account_sandbox_service" >> $GITHUB_OUTPUT
