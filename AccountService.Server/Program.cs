@@ -17,31 +17,31 @@ try
     builder.AddCustomConfiguration(args);
     Log.Information("Custom configuration added");
 
-    builder.Host.UseSerilog((context, services, configuration) =>
-        configuration.ReadFrom.Configuration(context.Configuration));
+    //builder.Host.UseSerilog((context, services, configuration) =>
+    //    configuration.ReadFrom.Configuration(context.Configuration));
 
-    Log.Information("Configuring services...");
-    var app = builder.ConfigureServices();
-    Log.Information("Services configured");
-
-    Log.Information("Configuring pipeline...");
-    app.ConfigurePipeline();
-    Log.Information("Pipeline configured");
-
-    Log.Information("Initializing database...");
     try
     {
+        Log.Information("Configuring services...");
+        var app = builder.ConfigureServices();
+        Log.Information("Services configured");
+        Log.Information("Configuring pipeline...");
+        app.ConfigurePipeline();
+        Log.Information("Pipeline configured");
+
+        Log.Information("Initializing database...");
         app.InitializeDatabase();
         Log.Information("Database initialized");
+
+        Log.Information("Running Kestrel...");
+        app.Run();
     }
-    catch (Exception dbEx)
+    catch (Exception ex)
     {
-        Log.Error(dbEx, "Database initialization failed");
-        throw; // rethrow so app doesn't continue silently
+        Log.Fatal(ex, "Application terminated unexpectedly");
     }
 
-    Log.Information("Running Kestrel...");
-    app.Run();
+  
 }
 catch (Exception ex)
 {

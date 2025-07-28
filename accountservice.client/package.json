@@ -8,9 +8,9 @@
     "build:start": "vite build --mode debug",
     "dev": "vite --mode development",
     "sandbox": "vite --mode sandbox",
-    "build:dev": "vite build --mode development",
-    "build:sandbox": "vite build --mode sandbox",
-    "build:prod": "vite build --mode production",
+    "build:Development": "vite build --mode development",
+    "build:Sandbox": "vite build --mode sandbox",
+    "build:Release": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },

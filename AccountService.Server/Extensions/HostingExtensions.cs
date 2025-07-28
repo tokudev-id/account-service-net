@@ -94,9 +94,10 @@ namespace AccountService.Server.Extensions
                 app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
-
-            app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.MapFallbackToFile("/index.html");
+            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseMiddleware<SecurityHeadersMiddleware>();
 
@@ -116,7 +117,6 @@ namespace AccountService.Server.Extensions
             app.UseAuthorization();
 
             app.MapDefaultControllerRoute();
-            app.MapFallbackToFile("/index.html");
 
             return app;
         }
