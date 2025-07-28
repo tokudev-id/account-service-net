@@ -201,14 +201,14 @@ const LoginFormComponent: FC = () => {
         )}
       </CardContent>
 
-      <CardFooter className="flex flex-col items-center space-y-2">
+      {/* <CardFooter className="flex flex-col items-center space-y-2">
        <p className="text-sm text-muted-foreground">
          Don't have an account?{' '}
          <Link to={'/register'} className="text-primary hover:underline">
            Register here
          </Link>
        </p>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };

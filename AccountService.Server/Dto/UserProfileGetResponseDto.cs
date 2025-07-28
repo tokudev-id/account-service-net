@@ -11,7 +11,7 @@ namespace AccountService.Server.Dto
         public DateTime? BirthDate { get; set; }
         public string Gender { get; set; }
         public string Country { get; set; }
-        public string City { get; set; }
+        public string Timezone { get; set; }
         public string ProfilePictureUrl { get; set; }
         public bool HasPassword { get; set; }
         public bool IsEmailVerified { get; set; }

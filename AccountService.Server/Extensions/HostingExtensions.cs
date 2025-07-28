@@ -139,17 +139,6 @@ namespace AccountService.Server.Extensions
                 });
             });
 
-            // Redis and Data Protection
-            var redisConnectionString = configuration.GetConnectionString("Redis");
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = "AccountService:Sessions:";
-            });
-
-            var redis = ConnectionMultiplexer.Connect(redisConnectionString);
-            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
-
             // Singleton Services
             //services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
             // Add other singletons...
@@ -175,21 +164,18 @@ namespace AccountService.Server.Extensions
         /// <param name="app">The WebApplication instance.</param>
         public static void InitializeDatabase(this WebApplication app)
         {
-            // Create a new scope to retrieve services
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
 
-            // Get a logger to provide context
-            var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Initializing and migrating databases...");
+            Console.WriteLine("Initializing and migrating databases...");
 
-            // Migrate each DbContext
-            MigrateDbContext<ApplicationDbContext>(services, logger);
-            MigrateDbContext<PersistedGrantDbContext>(services, logger);
-            MigrateDbContext<ConfigurationDbContext>(services, logger);
+            MigrateDbContext<ApplicationDbContext>(services);
+            MigrateDbContext<PersistedGrantDbContext>(services);
+            MigrateDbContext<ConfigurationDbContext>(services);
 
-            logger.LogInformation("Database initialization complete.");
+            Console.WriteLine("Database initialization complete.");
         }
+
 
         /// <summary>
         /// A generic helper method to apply migrations for any DbContext.
@@ -197,33 +183,34 @@ namespace AccountService.Server.Extensions
         /// <typeparam name="TContext">The type of the DbContext.</typeparam>
         /// <param name="services">The service provider to resolve services from.</param>
         /// <param name="logger">The logger for logging migration status.</param>
-        private static void MigrateDbContext<TContext>(IServiceProvider services, ILogger logger) where TContext : DbContext
+        private static void MigrateDbContext<TContext>(IServiceProvider services) where TContext : DbContext
         {
             var contextName = typeof(TContext).Name;
 
             try
             {
-                logger.LogInformation("Checking pending migrations for {DbContextName}", contextName);
+                Console.WriteLine($"Checking pending migrations for {contextName}");
                 var context = services.GetRequiredService<TContext>();
 
                 if (context.Database.GetPendingMigrations().Any())
                 {
-                    logger.LogInformation("Applying migrations for {DbContextName}...", contextName);
+                    Console.WriteLine($"Applying migrations for {contextName}...");
                     context.Database.Migrate();
-                    logger.LogInformation("{DbContextName} has been successfully migrated.", contextName);
+                    Console.WriteLine($"{contextName} has been successfully migrated.");
                 }
                 else
                 {
-                    logger.LogInformation("{DbContextName} is up to date. No migrations to apply.", contextName);
+                    Console.WriteLine($"{contextName} is up to date. No migrations to apply.");
                 }
             }
             catch (Exception ex)
             {
-                logger.LogCritical(ex, "An error occurred while migrating the {DbContextName} database.", contextName);
-                // Optionally, rethrow or handle the exception as needed for your startup flow
+                Console.WriteLine($"CRITICAL: An error occurred while migrating the {contextName} database.");
+                Console.WriteLine($"Exception: {ex.Message}");
                 throw;
             }
         }
+
         private static void SetupSession(IServiceCollection services, string redisConfig)
         {
             services.Configure<CookiePolicyOptions>(options =>

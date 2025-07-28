@@ -1,42 +1,55 @@
-using AccountService.Server.Extensions;
+﻿using AccountService.Server.Extensions;
 using Serilog;
-
-// Configure Serilog for structured logging first
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
-
-Log.Information("Starting up...");
 
 try
 {
+    Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Debug()
+        .WriteTo.Console()
+        .CreateBootstrapLogger();
+
+    Log.Information("==== Application Starting ====");
+
     var builder = WebApplication.CreateBuilder(args);
+    Log.Information("Builder created");
 
-    // Add custom configuration
+    Log.Information("Adding custom configuration...");
     builder.AddCustomConfiguration(args);
+    Log.Information("Custom configuration added");
 
-    // Add Serilog
-    builder.Host.UseSerilog((context, services, configuration) => configuration
-        .ReadFrom.Configuration(context.Configuration));
+    builder.Host.UseSerilog((context, services, configuration) =>
+        configuration.ReadFrom.Configuration(context.Configuration));
 
-    // Configure all your services
+    Log.Information("Configuring services...");
     var app = builder.ConfigureServices();
+    Log.Information("Services configured");
 
-    // Configure the HTTP request pipeline
+    Log.Information("Configuring pipeline...");
     app.ConfigurePipeline();
+    Log.Information("Pipeline configured");
 
-    // Initialize the database
-    app.InitializeDatabase();
+    Log.Information("Initializing database...");
+    try
+    {
+        app.InitializeDatabase();
+        Log.Information("Database initialized");
+    }
+    catch (Exception dbEx)
+    {
+        Log.Error(dbEx, "Database initialization failed");
+        throw; // rethrow so app doesn't continue silently
+    }
 
-    // This starts the web server and keeps the application alive
+    Log.Information("Running Kestrel...");
     app.Run();
 }
 catch (Exception ex)
 {
     Log.Fatal(ex, "Application terminated unexpectedly");
+    Console.WriteLine($"[FATAL] {ex}"); // fallback if Serilog fails
 }
 finally
 {
-    Log.Information("Shut down complete");
+    Log.Information("==== Application Shutting Down ====");
     Log.CloseAndFlush();
 }
