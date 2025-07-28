@@ -38,6 +38,6 @@ COPY --from=build /out .
 
 ENV ASPNETCORE_URLS=http://+:80
 
-EXPOSE 8000
+EXPOSE 80
 
 CMD [ "dotnet", "AccountService.Server.dll" ]
