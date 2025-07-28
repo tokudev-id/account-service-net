@@ -33,9 +33,9 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          BUILD_ENVIRONMENT="release"
+          BUILD_ENVIRONMENT="Release"
           if [[ "${{ github.ref }}" == "refs/heads/sandbox" ]]; then
-            BUILD_ENVIRONMENT="sandbox"
+            BUILD_ENVIRONMENT="Sandbox"
           fi
           docker build \
             -t ${{ env.IMAGE_NAME }}:latest \
