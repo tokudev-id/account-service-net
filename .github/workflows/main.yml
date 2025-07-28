@@ -89,9 +89,9 @@ jobs:
             echo "COMPOSE_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
             echo "CONTAINER_PROJECT_NAME=${{ env.PROJECT_BASE_NAME }}-sandbox" >> $GITHUB_OUTPUT
             echo "ASPNETCORE_ENVIRONMENT=Sandbox" >> $GITHUB_OUTPUT
-            echo "ConnectionStrings__ApplicationDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
-            echo "ConnectionStrings__ISGrantDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox-grant-v6;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
-            echo "ConnectionStrings__ISConfigDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox-config-v6;Uid=${{ secrets.DB_USERNAME }};pwd=${{ secrets.DB_PASSWORD }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+            echo "ConnectionStrings__ApplicationDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox;Uid=${{ secrets.DB_USERNAME_SANDBOX }};pwd=${{ secrets.DB_PASSWORD_SANDBOX }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+            echo "ConnectionStrings__ISGrantDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox-grant-v6;Uid=${{ secrets.DB_USERNAME_SANDBOX }};pwd=${{ secrets.DB_PASSWORD_SANDBOX }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
+            echo "ConnectionStrings__ISConfigDBConnectionString='Server=mysql-server;Port=3306;Database=account-service-sandbox-config-v6;Uid=${{ secrets.DB_USERNAME_SANDBOX }};pwd=${{ secrets.DB_PASSWORD_SANDBOX }};Convert Zero Datetime=True;SslMode=none;AllowPublicKeyRetrieval=True;Charset=utf8mb4;'" >> $GITHUB_OUTPUT
             echo "ConnectionStrings__Redis='redis-internal:6379,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
             echo "RedisServer__RedisCacheConfiguration='redis-internal,password=${{ secrets.REDIS_PASSWORD }}'" >> $GITHUB_OUTPUT
             echo "RedisServer__RedisInstanceName='restaurant:sandbox:'" >> $GITHUB_OUTPUT
