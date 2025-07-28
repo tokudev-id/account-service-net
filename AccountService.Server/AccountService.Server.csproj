@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <SpaRoot>..\accountservice.client</SpaRoot>
 	  <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+    <SpaProxyLaunchCommand>npm run start</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:8000</SpaProxyServerUrl>
 	<Configurations>Debug;Development;Sandbox;Review;Release;Staging;Testing</Configurations>
 	<UserSecretsId>b591a600-fd26-4ebe-a678-ee472433047d</UserSecretsId>

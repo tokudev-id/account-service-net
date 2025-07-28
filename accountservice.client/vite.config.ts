@@ -8,7 +8,7 @@ import { fileURLToPath, URL } from 'node:url';
 export default defineConfig(({ mode }) => {
   // Tell Vite to load env files from ./environment folder
   const envDir = path.resolve(__dirname, 'environment');
-  const env = loadEnv(mode, envDir, '');
+  const env = loadEnv(".env."+mode, envDir, '');
 
   const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ''

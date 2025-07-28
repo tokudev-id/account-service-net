@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "devlocal": "vite --mode devlocal",
-    "build:devlocal": "vite build --mode devlocal",
+    "start": "vite --mode debug",
+    "build:start": "vite build --mode debug",
     "dev": "vite --mode development",
     "sandbox": "vite --mode sandbox",
     "build:dev": "vite build --mode development",
