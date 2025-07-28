@@ -73,5 +73,53 @@ namespace AccountService.Server.Services.Account
             user.PinHash = _passwordHasher.HashPassword(user, pin);
             return await _userRepository.UpdateUserAsync(user);
         }
+
+        public async Task<(bool Success, string? ErrorMessage, object? Data)>
+            UpdateUserProfileAsync(string userId, UpdateProfileDto dto)
+        {
+            var user = await _userRepository.FindUserByIdAsync(userId);
+            if (user == null)
+                return (false, "User not found.", null);
+
+            // Update basic fields
+            if (!string.IsNullOrEmpty(dto.Name))
+                user.Name = dto.Name;
+
+            // Claims dictionary
+            var claimUpdates = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(dto.Gender)) claimUpdates["gender"] = dto.Gender;
+            if (!string.IsNullOrEmpty(dto.Country)) claimUpdates["country"] = dto.Country;
+            if (!string.IsNullOrEmpty(dto.Birthdate))
+            {
+                if (DateTime.TryParse(dto.Birthdate, out var birthdate))
+                    claimUpdates["birthdate"] = birthdate.ToString("yyyy-MM-dd");
+                else
+                    return (false, "Invalid birthdate format.", null);
+            }
+            if (!string.IsNullOrEmpty(dto.Timezone)) claimUpdates["timezone"] = dto.Timezone;
+
+            // Save user updates
+            var updateResult = await _userRepository.UpdateUserAsync(user);
+            if (!updateResult)
+                return (false, "Failed to update user profile.", null);
+
+            // Save claim updates
+            if (claimUpdates.Any())
+            {
+                var claimResult = await _userRepository.UpdateUserClaimsAsync(user.Id, claimUpdates);
+                if (!claimResult)
+                    return (false, "Failed to update user claims.", null);
+            }
+
+            var safeUser = new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+                Claims = claimUpdates
+            };
+
+            return (true, null, safeUser);
+        }
     }
 }

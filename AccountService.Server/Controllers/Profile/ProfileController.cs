@@ -15,7 +15,6 @@ namespace AccountService.Server.Controllers.Profile
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private readonly IAccountService _userService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAccountService _accountService;
@@ -26,7 +25,6 @@ namespace AccountService.Server.Controllers.Profile
             UserManager<ApplicationUser> userManager,
             IAccountService accountService)
         {
-            _userService = userService;
             _userManager = userManager;
             _signInManager = signInManager;
             _accountService = accountService;
@@ -72,7 +70,7 @@ namespace AccountService.Server.Controllers.Profile
                 BirthDate = birthdateValue,
                 Gender = claims.FindFirstValue(ClaimsConstants.Gender),
                 Country = claims.FindFirstValue(ClaimsConstants.Country),
-                City = claims.FindFirstValue(ClaimsConstants.City),
+                Timezone = claims.FindFirstValue("timezone"),
                 ProfilePictureUrl = picture,
                 IsEmailVerified = user.EmailConfirmed,
                 CurrentLogins = userLogins,
@@ -84,14 +82,48 @@ namespace AccountService.Server.Controllers.Profile
             return Ok(dictionary);
         }
 
-        [HttpPost]
-        public IActionResult PostFallback()
+        [HttpPatch]
+        [Authorize] // ensure only authenticated users can patch
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
         {
-            return BadRequest(new
+            try
             {
-                error = "unsupported_grant_type",
-                error_description = "Only GET with cookie session is supported"
-            });
+                // Ensure user is authenticated
+                if (!User.Identity?.IsAuthenticated ?? true)
+                {
+                    return Unauthorized(new { message = "Unauthorized: Invalid or missing token." });
+                }
+
+                // Get UserId from claims
+                var userId = User.FindFirst("sub")?.Value ??
+                             User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized(new { message = "Unauthorized: User ID not found in claims." });
+                }
+
+                // Validate at least one property is being updated
+                if (dto == null || (string.IsNullOrEmpty(dto.Name) &&
+                                    string.IsNullOrEmpty(dto.Gender) &&
+                                    string.IsNullOrEmpty(dto.Country) &&
+                                    string.IsNullOrEmpty(dto.Birthdate) &&
+                                    string.IsNullOrEmpty(dto.Timezone)))
+                {
+                    return BadRequest(new { message = "No changes provided." });
+                }
+
+                var result = await _accountService.UpdateUserProfileAsync(userId, dto);
+
+                if (!result.Success)
+                    return StatusCode(500, new { message = result.ErrorMessage ?? "Failed to update profile." });
+
+                return Ok(result.Data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Profile Update Error: {ex}");
+                return StatusCode(500, new { message = "Internal server error." });
+            }
         }
 
         [HttpPost("set-pin")]

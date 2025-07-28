@@ -2,13 +2,12 @@ import React, { useMemo, useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-// import EditProfileForm from '@/components/profile/edit-profile-form';
 // import SetPasswordForm from '@/components/profile/set-password-form';
 // import ChangePasswordForm from '@/components/profile/change-password-form';
 // import ImageUploadModal from '@/components/profile/image-upload-modal';
 import { Separator } from '@/components/ui/separator';
 
-import { Mail, LogOut, KeyRound } from 'lucide-react';
+import { Mail, LogOut, KeyRound, Edit } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 // import { useProfile } from '@/hooks/use-profile';
 import {
@@ -20,6 +19,7 @@ import {
 import { format, parseISO } from 'date-fns';
 // import { useToast } from '@/hooks/use-toast';
 import { useProfile } from '@/hooks/use-profile';
+import EditProfileForm from '@/components/profile/edit-profile-form';
 
 interface ProfileFieldDisplayProps {
   label: string;
@@ -41,17 +41,17 @@ const ProfilePage: React.FC = () => {
     isLoading,
     error,
     isEditing,
-    // setIsEditing,
+    setIsEditing,
     handleLogout,
-    // fetchUserInfo,
+    fetchUserInfo,
   } = useProfile();
   // const { toast } = useToast();
 
   const [showSetPasswordForm, setShowSetPasswordForm] = useState(false);
   // const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   // const [isImageUploadModalOpen, setIsImageUploadModalOpen] = useState(false);
-  // const [pendingProfilePicture, setPendingProfilePicture] = useState<File | null>(null);
-  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pendingProfilePicture, setPendingProfilePicture] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const findLabel = useCallback((options: DropdownOption[], value?: string): string | undefined => {
     if (!value) return undefined;
@@ -85,20 +85,20 @@ const ProfilePage: React.FC = () => {
     };
   }, [userInfo]);
 
-  // const handleCancelEdit = useCallback(() => {
-  //   setIsEditing(false);
-  //   if (previewUrl) URL.revokeObjectURL(previewUrl);
-  //   setPendingProfilePicture(null);
-  //   setPreviewUrl(null);
-  // }, [setIsEditing, previewUrl]);
+  const handleCancelEdit = useCallback(() => {
+    setIsEditing(false);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPendingProfilePicture(null);
+    setPreviewUrl(null);
+  }, [setIsEditing, previewUrl]);
 
-  // const handleEditProfileSuccess = useCallback(() => {
-  //   setIsEditing(false);
-  //   if (previewUrl) URL.revokeObjectURL(previewUrl);
-  //   setPendingProfilePicture(null);
-  //   setPreviewUrl(null);
-  //   fetchUserInfo();
-  // }, [setIsEditing, fetchUserInfo, previewUrl]);
+  const handleEditProfileSuccess = useCallback(() => {
+    setIsEditing(false);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPendingProfilePicture(null);
+    setPreviewUrl(null);
+    fetchUserInfo();
+  }, [setIsEditing, fetchUserInfo, previewUrl]);
 
   // const handleSetPasswordSuccess = () => {
   //   setShowSetPasswordForm(false);
@@ -169,11 +169,11 @@ const ProfilePage: React.FC = () => {
                   <p className="text-sm text-muted-foreground">{userInfo.email}</p>
                 </div>
               </div>
-              {/* {!isFormActive && (
+              {!isFormActive && (
                 <Button onClick={() => setIsEditing(true)} size="sm" disabled={isFormActive}>
-                  <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
+                  <Edit className="mr-2 h-4 w-4" /> Edit Profile
                 </Button>
-              )} */}
+              )}
             </div>
           )}
         </div>
@@ -185,13 +185,12 @@ const ProfilePage: React.FC = () => {
             {error && <p className="text-destructive text-sm mb-4">Error loading profile: {error}</p>}
 
             {isEditing && userInfo && memoizedInitialData ? (
-                <></>
-            //   <EditProfileForm
-            //     initialData={memoizedInitialData}
-            //     onSaveSuccess={handleEditProfileSuccess}
-            //     onCancel={handleCancelEdit}
-            //     pendingProfilePicture={pendingProfilePicture}
-            //   />
+              <EditProfileForm
+                initialData={memoizedInitialData}
+                onSaveSuccess={handleEditProfileSuccess}
+                onCancel={handleCancelEdit}
+                pendingProfilePicture={pendingProfilePicture}
+              />
             ) : showSetPasswordForm ? (
                 <></>
             //   <SetPasswordForm onSuccess={handleSetPasswordSuccess} onCancel={() => setShowSetPasswordForm(false)} />

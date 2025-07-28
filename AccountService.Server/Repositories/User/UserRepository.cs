@@ -57,5 +57,26 @@ namespace AccountService.Server.Repositories.User
             var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
         }
+
+        public async Task<bool> UpdateUserClaimsAsync(string userId, Dictionary<string, string> claims)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return false;
+
+            var currentClaims = await _userManager.GetClaimsAsync(user);
+
+            foreach (var kvp in claims)
+            {
+                var existingClaim = currentClaims.FirstOrDefault(c => c.Type == kvp.Key);
+                if (existingClaim != null)
+                {
+                    // Replace existing claim
+                    await _userManager.RemoveClaimAsync(user, existingClaim);
+                }
+                await _userManager.AddClaimAsync(user, new Claim(kvp.Key, kvp.Value));
+            }
+
+            return true;
+        }
     }
 }
