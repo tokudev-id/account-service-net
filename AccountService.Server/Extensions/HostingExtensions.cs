@@ -139,17 +139,6 @@ namespace AccountService.Server.Extensions
                 });
             });
 
-            // Redis and Data Protection
-            var redisConnectionString = configuration.GetConnectionString("Redis");
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = "AccountService:Sessions:";
-            });
-
-            var redis = ConnectionMultiplexer.Connect(redisConnectionString);
-            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
-
             // Singleton Services
             //services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
             // Add other singletons...
