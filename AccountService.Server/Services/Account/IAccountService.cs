@@ -11,8 +11,11 @@ namespace AccountService.Server.Services.Account
         Task<ApplicationUser?> FindUserByIdAsync(string id);
         Task<Dictionary<string, object>> GetUserClaimsAsync(string userId, List<string> claimTypes);
         Task<bool> ValidateUserWithPinAsync(string phoneNumber, string pin);
-        public Task<bool> SetUserPinAsync(string userId, string pin);
 
+        // COMMAND
         Task<(bool Success, string? ErrorMessage, object? Data)> UpdateUserProfileAsync(string userId, UpdateProfileDto dto);
+        Task<bool> VerifyPasswordAsync(ApplicationUser user, string password);
+        Task<bool> ChangePinAsync(ApplicationUser user, string newPin);
+        Task<bool> ChangePinWithPasswordAsync(ApplicationUser user, string password, string newPin);
     }
 }

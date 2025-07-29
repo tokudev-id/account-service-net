@@ -53,11 +53,6 @@ export function useProfile() {
       });
 
       if (response.status === 401) {
-        toast({
-          title: 'Session Expired',
-          description: 'Please log in again.',
-          variant: 'destructive',
-        });
         navigate('/login');
         return;
       }

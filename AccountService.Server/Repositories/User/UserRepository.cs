@@ -78,5 +78,10 @@ namespace AccountService.Server.Repositories.User
 
             return true;
         }
+
+        public async Task<bool> VerifyUserPasswordAsync(ApplicationUser user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
+        }
     }
 }

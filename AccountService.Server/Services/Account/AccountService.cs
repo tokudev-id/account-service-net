@@ -4,6 +4,7 @@ using AccountService.Server.Dto;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Net.NetworkInformation;
 
 namespace AccountService.Server.Services.Account
 {
@@ -64,16 +65,6 @@ namespace AccountService.Server.Services.Account
             return result == PasswordVerificationResult.Success;
         }
 
-        public async Task<bool> SetUserPinAsync(string userId, string pin)
-        {
-            var user = await _userRepository.FindUserByIdAsync(userId);
-            if (user == null)
-                return false;
-
-            user.PinHash = _passwordHasher.HashPassword(user, pin);
-            return await _userRepository.UpdateUserAsync(user);
-        }
-
         public async Task<(bool Success, string? ErrorMessage, object? Data)>
             UpdateUserProfileAsync(string userId, UpdateProfileDto dto)
         {
@@ -120,6 +111,29 @@ namespace AccountService.Server.Services.Account
             };
 
             return (true, null, safeUser);
+        }
+
+        public Task<bool> VerifyPasswordAsync(ApplicationUser user, string password)
+        {
+            return _userRepository.VerifyUserPasswordAsync(user, password);
+        }
+
+        public async Task<bool> ChangePinAsync(ApplicationUser user, string newPin)
+        {
+            var userData = await _userRepository.FindUserByIdAsync(user.Id);
+            if (userData == null)
+                return false;
+
+            user.PinHash = _passwordHasher.HashPassword(user, newPin);
+            return await _userRepository.UpdateUserAsync(user);
+        }
+
+        public async Task<bool> ChangePinWithPasswordAsync(ApplicationUser user, string password, string newPin)
+        {
+            bool PasswordIsValid = await VerifyPasswordAsync(user, password);
+            if (!PasswordIsValid) return false;
+
+            return await ChangePinAsync(user, newPin);
         }
     }
 }

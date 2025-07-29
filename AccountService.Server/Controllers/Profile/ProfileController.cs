@@ -126,21 +126,55 @@ namespace AccountService.Server.Controllers.Profile
             }
         }
 
-        [HttpPost("set-pin")]
-        public async Task<IActionResult> SetPin([FromBody] SetPinRequestDto request)
+        [HttpPost("change-pin")]
+        public async Task<IActionResult> SetPinWithPassword([FromBody] ChangePinWithPasswordDto request)
         {
-            if (string.IsNullOrWhiteSpace(request.Pin) || string.IsNullOrWhiteSpace(request.UserId))
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user == null)
             {
-                return BadRequest("UserId and PIN must be provided.");
+                return Unauthorized(new
+                {
+                    error = "invalid_token",
+                    error_description = "User not found."
+                });
             }
 
-            var success = await _accountService.SetUserPinAsync(request.UserId, request.Pin);
+            if (string.IsNullOrWhiteSpace(request.NewPin) || string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest("PIN or Password must be provided.");
+            }
+
+            var success = await _accountService.ChangePinWithPasswordAsync(user, request.Password, request.NewPin);
+            if (!success)
+                return BadRequest(new { message = "Invalid password or failed to update PIN" });
+
+            return Ok(new { message = "PIN updated successfully" });
+        }
+
+        [HttpPost("verify-password")]
+        public async Task<IActionResult> VerifyPassword([FromBody] VerifyPasswordDto request)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user == null)
+            {
+                return Unauthorized(new
+                {
+                    error = "invalid_token",
+                    error_description = "User not found."
+                });
+            }
+            if (string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest("Password must be provided.");
+            }
+
+            var success = await _accountService.VerifyPasswordAsync(user, request.Password);
             if (!success)
             {
-                return NotFound("User not found or failed to update PIN.");
+                return NotFound("User not found or failed to verify password.");
             }
 
-            return Ok(new { message = "PIN updated successfully." });
+            return Ok(new { message = "Password is valid." });
         }
     }
 }

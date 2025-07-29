@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 // import ImageUploadModal from '@/components/profile/image-upload-modal';
 import { Separator } from '@/components/ui/separator';
 
-import { Mail, LogOut, KeyRound, Edit } from 'lucide-react';
+import { Mail, LogOut, KeyRound, Edit, ShieldAlert } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 // import { useProfile } from '@/hooks/use-profile';
 import {
@@ -205,7 +205,6 @@ const ProfilePage: React.FC = () => {
                   <ProfileFieldDisplay label="Full Name" value={userInfo.name} />
                   <ProfileFieldDisplay label="Gender" value={findLabel(genderOptions, userInfo.gender)} />
                   <ProfileFieldDisplay label="Country" value={findLabel(countryOptions, userInfo.country)} />
-                  <ProfileFieldDisplay label="Birthday" value={formatDisplayDate(userInfo.birthdate)} />
                   <ProfileFieldDisplay label="Time Zone" value={findLabel(timezoneOptions, userInfo.timezone)} />
                 </div>
                 <Separator className="my-8" />
@@ -229,6 +228,11 @@ const ProfilePage: React.FC = () => {
                         <p className="text-xs text-muted-foreground mt-1">Allows you to log in with a password in addition to any third-party providers.</p>
                       </div>
                     )}
+                     <div>
+                        <Button variant="outline" onClick={() => window.location.href = "/change-pin"} disabled={isFormActive}>
+                          <ShieldAlert className="mr-2 h-4 w-4" /> Update PIN
+                        </Button>
+                      </div>
                     {/* {userInfo.has_password && (
                       <div>
                         <Button variant="outline" onClick={() => setShowChangePasswordForm(true)} disabled={isFormActive}>

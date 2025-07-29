@@ -14,6 +14,7 @@ namespace AccountService.Server.Repositories.User {
         //COMMAND
         Task<bool> CreateUserAsync(ApplicationUser user, string password);
         Task<bool> UpdateUserAsync(ApplicationUser user);
+        Task<bool> VerifyUserPasswordAsync(ApplicationUser user, string password);
         Task<bool> UpdateUserClaimsAsync(string userId, Dictionary<string, string> claims);
 
     }

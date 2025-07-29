@@ -130,11 +130,11 @@ const LoginFormComponent: FC = () => {
               )}
             />
 
-            <div className="flex items-center justify-between text-sm">
+            {/* <div className="flex items-center justify-between text-sm">
               <Link to="/forgot-password" className="text-primary hover:underline">
                 Forgot password?
               </Link>
-            </div>
+            </div> */}
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (

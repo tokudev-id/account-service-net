@@ -9,6 +9,7 @@ import ProfilePage from './pages/Profile';
 import Logout from './pages/Logout';
 import Error from './pages/Error';
 import OIDCLoading from './pages/OIDCLoading';
+import ChangePinPage from './pages/ChangePin/ChangePin';
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                         <Route element={<ProtectedRoute />}>
                             <Route index element={<ProfilePage />} />
                             <Route path="profile" element={<ProfilePage />} />
+                            <Route path="change-pin" element={<ChangePinPage />} />
                         </Route>
 
                         {/* 404 fallback */}
